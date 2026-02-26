@@ -18,8 +18,8 @@ class User extends Authenticatable
         'email',
         'password',
         'reputation',
-        'is_global_admin',
-        'is_banned',
+        'isGlobalAdmin',
+        'isBanned',
     ];
 
     protected $hidden = [

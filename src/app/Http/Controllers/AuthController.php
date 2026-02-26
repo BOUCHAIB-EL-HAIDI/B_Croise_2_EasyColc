@@ -21,40 +21,43 @@ class AuthController extends Controller
 
     public function submitRegister(Request $request)
     {
+        $userCount = User::count();
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:50',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
+
         ]);
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'isGlobalAdmin' => $userCount === 0,
         ]);
 
-        Auth::login($user);
-
-        return redirect()->route('home');
+        return redirect()->route('login');
     }
 
     public function submitLogin(Request $request)
     {
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
-        ]);
+       $request->validate([
 
-        if (Auth::attempt($credentials, $request->boolean('remember'))) {
-            $request->session()->regenerate();
+      'email'=>'required|email',
+      'password'=>'required'
+       ]);
 
-            return redirect()->intended('/');
-        }
+       $credentials = $request->only('email' , 'password');
 
+       if(Auth::attempt($credentials)){
+        $request->session()->regenerate();
+
+       }
         return back()->withErrors([
-            'email' => 'Les identifiants ne correspondent pas à nos enregistrements.',
+            'email' => 'Email ou mot de passe incorrect.',
         ])->onlyInput('email');
     }
+
 
     public function logout(Request $request)
     {
