@@ -30,13 +30,20 @@
                 </p>
 
                 <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-4">
-                    <a href="/auth/register" class="w-full sm:w-auto px-8 py-4 bg-brand-600 text-white font-bold rounded-2xl shadow-xl shadow-brand-500/30 hover:bg-brand-700 hover:-translate-y-1 transition-all text-lg flex items-center justify-center gap-2">
-                        Créer un compte
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 23 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
-                    </a>
-                    <a href="/auth/login" class="w-full sm:w-auto px-8 py-4 bg-white text-gray-700 font-bold rounded-2xl border-2 border-gray-100 hover:border-brand-200 hover:bg-brand-50 transition-all text-lg text-center">
-                        Se connecter
-                    </a>
+                    <?php if(auth()->guard()->guest()): ?>
+                        <a href="<?php echo e(route('register')); ?>" class="w-full sm:w-auto px-8 py-4 bg-brand-600 text-white font-bold rounded-2xl shadow-xl shadow-brand-500/30 hover:bg-brand-700 hover:-translate-y-1 transition-all text-lg flex items-center justify-center gap-2">
+                            Créer un compte
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 23 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
+                        </a>
+                        <a href="<?php echo e(route('login')); ?>" class="w-full sm:w-auto px-8 py-4 bg-white text-gray-700 font-bold rounded-2xl border-2 border-gray-100 hover:border-brand-200 hover:bg-brand-50 transition-all text-lg text-center">
+                            Se connecter
+                        </a>
+                    <?php else: ?>
+                        <a href="<?php echo e(route('home')); ?>" class="w-full sm:w-auto px-8 py-4 bg-brand-600 text-white font-bold rounded-2xl shadow-xl shadow-brand-500/30 hover:bg-brand-700 hover:-translate-y-1 transition-all text-lg flex items-center justify-center gap-2">
+                            Aller à l'accueil
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 23 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
+                        </a>
+                    <?php endif; ?>
                 </div>
             </div>
 

@@ -10,12 +10,12 @@
                 Rejoignez EasyColoc
             </h2>
             <p class="mt-3 text-sm text-gray-500">
-                Déjà membre ? <a href="/auth/login" class="font-semibold text-brand-600 hover:text-brand-500 transition-colors">Connectez-vous ici</a>
+                Déjà membre ? <a href="{{ route('login') }}" class="font-semibold text-brand-600 hover:text-brand-500 transition-colors">Connectez-vous ici</a>
             </p>
         </div>
 
         <div class="mt-8 glass rounded-3xl shadow-2xl shadow-brand-200/50 p-8 sm:p-10">
-            <form class="space-y-5" action="#" method="POST">
+            <form class="space-y-5" action="{{ route('register') }}" method="POST">
                 @csrf
                 
                 <div class="grid grid-cols-1 gap-5">
@@ -28,8 +28,11 @@
                                 </svg>
                             </div>
                             <input id="name" name="name" type="text" autocomplete="name" required 
-                                class="block w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all bg-white/50"
-                                placeholder="Jean Dupont">
+                                class="block w-full pl-10 pr-4 py-3 border @error('name') border-red-500 @else border-gray-200 @enderror rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all bg-white/50"
+                                placeholder="Jean Dupont" value="{{ old('name') }}">
+                            @error('name')
+                                <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
+                            @enderror
                         </div>
                     </div>
 
@@ -42,8 +45,11 @@
                                 </svg>
                             </div>
                             <input id="email" name="email" type="email" autocomplete="email" required 
-                                class="block w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all bg-white/50"
-                                placeholder="jean@exemple.com">
+                                class="block w-full pl-10 pr-4 py-3 border @error('email') border-red-500 @else border-gray-200 @enderror rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all bg-white/50"
+                                placeholder="jean@exemple.com" value="{{ old('email') }}">
+                            @error('email')
+                                <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
+                            @enderror
                         </div>
                     </div>
 
@@ -56,8 +62,11 @@
                                 </svg>
                             </div>
                             <input id="password" name="password" type="password" autocomplete="new-password" required 
-                                class="block w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all bg-white/50"
+                                class="block w-full pl-10 pr-4 py-3 border @error('password') border-red-500 @else border-gray-200 @enderror rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all bg-white/50"
                                 placeholder="••••••••">
+                            @error('password')
+                                <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
+                            @enderror
                         </div>
                         <p class="mt-2 text-[10px] text-gray-400">Minimum 8 caractères, incluant des chiffres et lettres.</p>
                     </div>

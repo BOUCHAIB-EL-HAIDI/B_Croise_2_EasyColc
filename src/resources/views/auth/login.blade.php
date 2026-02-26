@@ -10,12 +10,12 @@
                 Bon retour parmi nous !
             </h2>
             <p class="mt-3 text-sm text-gray-500">
-                Ou <a href="/auth/register" class="font-semibold text-brand-600 hover:text-brand-500 transition-colors">créez votre compte gratuitement</a>
+                Ou <a href="{{ route('register') }}" class="font-semibold text-brand-600 hover:text-brand-500 transition-colors">créez votre compte gratuitement</a>
             </p>
         </div>
 
         <div class="mt-8 glass rounded-3xl shadow-2xl shadow-brand-200/50 p-8 sm:p-10">
-            <form class="space-y-6" action="#" method="POST">
+            <form class="space-y-6" action="{{ route('login') }}" method="POST">
                 @csrf
                 <div class="space-y-5">
                     <div>
@@ -27,8 +27,11 @@
                                 </svg>
                             </div>
                             <input id="email" name="email" type="email" autocomplete="email" required 
-                                class="block w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all bg-white/50"
-                                placeholder="nom@exemple.com">
+                                class="block w-full pl-10 pr-4 py-3 border @error('email') border-red-500 @else border-gray-200 @enderror rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all bg-white/50"
+                                placeholder="nom@exemple.com" value="{{ old('email') }}">
+                            @error('email')
+                                <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
+                            @enderror
                         </div>
                     </div>
 
@@ -44,8 +47,11 @@
                                 </svg>
                             </div>
                             <input id="password" name="password" type="password" autocomplete="current-password" required 
-                                class="block w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all bg-white/50"
+                                class="block w-full pl-10 pr-4 py-3 border @error('password') border-red-500 @else border-gray-200 @enderror rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all bg-white/50"
                                 placeholder="••••••••">
+                            @error('password')
+                                <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
+                            @enderror
                         </div>
                     </div>
                 </div>

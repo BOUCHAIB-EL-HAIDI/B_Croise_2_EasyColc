@@ -72,8 +72,15 @@
                 <!-- Desktop Menu -->
                 <div class="hidden md:flex items-center space-x-8">
                     <div class="flex items-center space-x-4">
-                        <a href="/auth/login" class="px-5 py-2.5 text-brand-600 font-semibold hover:bg-brand-50 rounded-xl transition-all">Connexion</a>
-                        <a href="/auth/register" class="px-5 py-2.5 bg-brand-600 text-white font-semibold rounded-xl shadow-lg shadow-brand-500/30 hover:bg-brand-700 hover:-translate-y-0.5 transition-all">S'inscrire</a>
+                        @guest
+                            <a href="{{ route('login') }}" class="px-5 py-2.5 text-brand-600 font-semibold hover:bg-brand-50 rounded-xl transition-all">Connexion</a>
+                            <a href="{{ route('register') }}" class="px-5 py-2.5 bg-brand-600 text-white font-semibold rounded-xl shadow-lg shadow-brand-500/30 hover:bg-brand-700 hover:-translate-y-0.5 transition-all">S'inscrire</a>
+                        @else
+                            <form action="{{ route('logout') }}" method="POST">
+                                @csrf
+                                <button type="submit" class="px-5 py-2.5 text-red-600 font-semibold hover:bg-red-50 rounded-xl transition-all">Déconnexion</button>
+                            </form>
+                        @endguest
                     </div>
                 </div>
 
@@ -102,8 +109,15 @@
              class="md:hidden glass border-t border-gray-100 pb-6">
             <div class="px-4 py-4 space-y-2">
                 <div class="grid grid-cols-1 gap-3 pt-4 border-t border-gray-100">
-                    <a href="/auth/login" class="flex justify-center px-4 py-3 text-brand-600 font-bold border-2 border-brand-100 rounded-xl">Connexion</a>
-                    <a href="/auth/register" class="flex justify-center px-4 py-3 bg-brand-600 text-white font-bold rounded-xl shadow-lg">S'inscrire</a>
+                    @guest
+                        <a href="{{ route('login') }}" class="flex justify-center px-4 py-3 text-brand-600 font-bold border-2 border-brand-100 rounded-xl">Connexion</a>
+                        <a href="{{ route('register') }}" class="flex justify-center px-4 py-3 bg-brand-600 text-white font-bold rounded-xl shadow-lg">S'inscrire</a>
+                    @else
+                        <form action="{{ route('logout') }}" method="POST">
+                            @csrf
+                            <button type="submit" class="w-full flex justify-center px-4 py-3 text-red-600 font-bold border-2 border-red-100 rounded-xl">Déconnexion</button>
+                        </form>
+                    @endguest
                 </div>
             </div>
         </div>
