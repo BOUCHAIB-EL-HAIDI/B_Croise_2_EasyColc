@@ -17,8 +17,8 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->integer('reputation')->default(0);
-            $table->boolean('isGlobalAdmin')->default(false);
-            $table->boolean('isBanned')->default(false);
+            $table->boolean('is_global_admin')->default(false);
+            $table->boolean('is_banned')->default(false);
             $table->timestamps();
         });
     }
