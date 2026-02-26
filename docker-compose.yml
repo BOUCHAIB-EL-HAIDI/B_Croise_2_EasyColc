@@ -23,7 +23,7 @@ services:
       POSTGRES_USER: "${POSTGRES_USER}"
       POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
     ports:
-      - "2004:${PGADMIN_PORT}"
+      - "2004:${POSTGRES_PORT}"
     networks:
       - app-network
     volumes:
