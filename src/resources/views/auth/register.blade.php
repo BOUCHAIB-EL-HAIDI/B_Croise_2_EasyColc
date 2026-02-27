@@ -46,7 +46,7 @@
                             </div>
                             <input id="email" name="email" type="email" autocomplete="email" required
                                 class="block w-full pl-10 pr-4 py-3 border @error('email') border-red-500 @else border-gray-200 @enderror rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all bg-white/50"
-                                placeholder="jean@exemple.com" value="{{ old('email') }}">
+                                placeholder="jean@exemple.com" value="{{ request('email', old('email')) }}">
                             @error('email')
                                 <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
                             @enderror

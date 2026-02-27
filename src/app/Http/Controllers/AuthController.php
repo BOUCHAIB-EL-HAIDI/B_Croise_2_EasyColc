@@ -36,6 +36,10 @@ class AuthController extends Controller
             'is_global_admin' => $userCount === 0,
         ]);
 
+        if (session('invitation_token')) {
+            return redirect()->route('invitations.show', session('invitation_token'));
+        }
+
         return redirect()->route('login');
     }
 
@@ -51,6 +55,10 @@ class AuthController extends Controller
 
        if(Auth::attempt($credentials)){
         $request->session()->regenerate();
+
+        if (session('invitation_token')) {
+            return redirect()->route('invitations.show', session('invitation_token'));
+        }
 
         return redirect('/home');
 

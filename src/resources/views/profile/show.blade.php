@@ -22,6 +22,8 @@
                 
                 @if($user->is_global_admin)
                     <span class="inline-flex items-center px-4 py-1.5 bg-brand-100 text-brand-700 rounded-full text-xs font-bold uppercase tracking-widest"> Admin Global </span>
+                @elseif($membership)
+                    <span class="inline-flex items-center px-4 py-1.5 bg-brand-600 text-white rounded-full text-xs font-bold uppercase tracking-widest"> {{ $membership->role }} </span>
                 @else
                     <span class="inline-flex items-center px-4 py-1.5 bg-gray-100 text-gray-600 rounded-full text-xs font-bold uppercase tracking-widest"> Utilisateur </span>
                 @endif
@@ -70,33 +72,7 @@
                     </div>
                 @endif
             </div>
-
-            <div class="bg-gray-900 rounded-[40px] p-8 md:p-10 text-white shadow-2xl relative overflow-hidden">
-                <div class="absolute top-0 right-0 w-32 h-32 bg-brand-500/20 rounded-full blur-3xl"></div>
-                <h3 class="text-xl font-bold mb-6 relative z-10 flex items-center gap-3 text-brand-400">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
-                    </svg>
-                    Sécurité & Compte
-                </h3>
-                <div class="space-y-4 relative z-10">
-                    <div class="flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-white/10 hover:bg-white/10 transition-all cursor-pointer group">
-                        <span class="font-medium">Changer le mot de passe</span>
-                        <svg class="w-5 h-5 text-gray-500 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                        </svg>
-                    </div>
-                    <form action="{{ route('logout') }}" method="POST">
-                        @csrf
-                        <button type="submit" class="w-full flex items-center justify-between p-4 bg-rose-500/10 rounded-2xl border border-rose-500/20 hover:bg-rose-500/20 transition-all text-rose-400">
-                            <span class="font-bold">Déconnexion de l'appareil</span>
-                            <svg class="w-5 h-5 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
-                            </svg>
-                        </button>
-                    </form>
-                </div>
-            </div>
+        </div>
         </div>
     </div>
 </div>

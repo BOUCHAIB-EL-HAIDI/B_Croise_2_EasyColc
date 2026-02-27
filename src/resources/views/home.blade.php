@@ -153,9 +153,23 @@
                         
                         @if($membership->role === 'owner')
                             <hr class="my-6 border-white/10">
+                            
+                            <div class="mb-6">
+                                <p class="text-sm font-bold text-gray-400 uppercase tracking-widest mb-3">Inviter un membre</p>
+                                <form action="{{ route('invitations.store') }}" method="POST" class="space-y-3">
+                                    @csrf
+                                    <div class="relative">
+                                        <input type="email" name="email" placeholder="Email du futur coloc" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-brand-500 transition-all text-white">
+                                    </div>
+                                    <button type="submit" class="w-full py-2.5 bg-brand-600 hover:bg-brand-700 rounded-xl font-bold text-xs transition-all border border-brand-500/20">
+                                        Envoyer le lien
+                                    </button>
+                                </form>
+                            </div>
+
                             <form action="{{ route('colocations.cancel', $colocation) }}" method="POST" onsubmit="return confirm('Êtes-vous sûr de vouloir annuler cette colocation ? Cette action est irréversible.')">
                                 @csrf
-                                <button type="submit" class="w-full py-3 bg-rose-600 hover:bg-rose-700 rounded-xl font-bold text-sm transition-all border border-rose-500/20">
+                                <button type="submit" class="w-full py-3 bg-rose-600/20 hover:bg-rose-600 text-rose-400 hover:text-white rounded-xl font-bold text-xs transition-all border border-rose-500/10">
                                     Annuler la colocation
                                 </button>
                             </form>
