@@ -116,10 +116,10 @@
                     <section>
                         <h3 class="text-xl font-bold text-gray-900 mb-6 px-4">Actions rapides</h3>
                         <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                            <button class="p-6 bg-white border border-gray-100 rounded-[32px] hover:border-brand-300 hover:shadow-lg transition-all text-center group">
+                            <a href="{{ route('expenses.index') }}" class="p-6 bg-white border border-gray-100 rounded-[32px] hover:border-brand-300 hover:shadow-lg transition-all text-center group">
                                 <span class="text-2xl mb-3 block group-hover:scale-125 transition-transform">➕</span>
-                                <span class="text-sm font-bold text-gray-700">Dépense</span>
-                            </button>
+                                <span class="text-sm font-bold text-gray-700">Dépenses</span>
+                            </a>
                             <button class="p-6 bg-white border border-gray-100 rounded-[32px] hover:border-brand-300 hover:shadow-lg transition-all text-center group">
                                 <span class="text-2xl mb-3 block group-hover:scale-125 transition-transform">📅</span>
                                 <span class="text-sm font-bold text-gray-700">Calendrier</span>
