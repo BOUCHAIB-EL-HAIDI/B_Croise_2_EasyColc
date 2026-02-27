@@ -9,7 +9,7 @@
             <h1 class="text-3xl md:text-5xl font-extrabold text-gray-900 tracking-tight mb-2">
                 Gérer les <span class="text-brand-600">Catégories</span> 🏷️
             </h1>
-            <p class="text-lg text-gray-600 font-medium"> Organisez vos denses pour une meilleure clarté. </p>
+            <p class="text-lg text-gray-600 font-medium"> Organisez vos dépenses pour une meilleure clarté. </p>
         </div>
         <a href="{{ route('home') }}" class="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-gray-700 font-bold rounded-2xl border border-gray-100 shadow-sm hover:border-brand-200 hover:bg-brand-50 transition-all">
             Retour au tableau de bord
@@ -47,6 +47,13 @@
                 </div>
             @endif
 
+            @if(session('error'))
+                <div class="p-4 bg-rose-50 border border-rose-100 text-rose-700 rounded-2xl flex items-center gap-3 animate-slide-in">
+                    <span class="text-xl">⚠️</span>
+                    <p class="font-bold">{{ session('error') }}</p>
+                </div>
+            @endif
+
             <div class="bg-white rounded-[40px] border border-gray-100 shadow-xl overflow-hidden">
                 <div class="p-8 border-b border-gray-50">
                     <h3 class="text-xl font-bold text-gray-900 flex items-center gap-3">
@@ -71,6 +78,16 @@
                                     </button>
                                 </form>
                             </div>
+                            
+                            <form action="{{ route('categories.destroy', $category) }}" method="POST" onsubmit="return confirm('Voulez-vous vraiment supprimer cette catégorie ?')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="p-3 text-rose-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                    </svg>
+                                </button>
+                            </form>
                         </div>
                     @empty
                         <div class="p-12 text-center">

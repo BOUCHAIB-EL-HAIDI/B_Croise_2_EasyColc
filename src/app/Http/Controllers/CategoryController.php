@@ -40,6 +40,8 @@ class CategoryController extends Controller
             'name' => 'required|string|max:255',
         ]);
 
+        // Authorization is handled by middleware and route binding, 
+        // but we ensure the category belongs to the user's colocation.
         $user = Auth::user();
         if ($category->colocation_id !== $user->activeMembership->colocation_id) {
             abort(403);
@@ -50,5 +52,22 @@ class CategoryController extends Controller
         ]);
 
         return back()->with('success', 'Catégorie mise à jour avec succès !');
+    }
+
+    public function destroy(Category $category)
+    {
+        $user = Auth::user();
+        if ($category->colocation_id !== $user->activeMembership->colocation_id) {
+            abort(403);
+        }
+
+        // Check if there are expenses associated with this category
+        if ($category->expenses()->exists()) {
+            return back()->with('error', 'Impossible de supprimer cette catégorie car elle contient des dépenses.');
+        }
+
+        $category->delete();
+
+        return back()->with('success', 'Catégorie supprimée avec succès !');
     }
 }
