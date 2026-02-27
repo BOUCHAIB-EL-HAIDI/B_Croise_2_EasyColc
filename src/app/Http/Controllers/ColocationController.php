@@ -83,13 +83,10 @@ class ColocationController extends Controller
         }
 
         if ($membership->role === 'owner') {
-            return back()->with('error', 'Le propriétaire ne peut pas quitter la colocation. Vous devez soit annuler la colocation, soit transférer la propriété.');
+            return back()->with('error', 'Le propriétaire ne peut pas quitter la colocation.');
         }
 
-        $membership->update([
-            'is_active' => false,
-            'left_at' => now()
-        ]);
+        $this->handleMemberDeparture($membership);
 
         return redirect('/home')->with('success', 'Vous avez quitté la colocation.');
     }
@@ -99,12 +96,10 @@ class ColocationController extends Controller
         $currentUser = Auth::user();
         $currentMembership = $currentUser->activeMembership;
 
-        // Security: Only the owner of the colocation can remove members
         if (!$currentMembership || $currentMembership->role !== 'owner') {
             return back()->with('error', 'Seul le propriétaire peut retirer des membres.');
         }
 
-        // Check if the membership to remove belongs to the same colocation
         if ($membership->colocation_id !== $currentMembership->colocation_id) {
             return back()->with('error', 'Action non autorisée.');
         }
@@ -113,11 +108,40 @@ class ColocationController extends Controller
             return back()->with('error', 'Vous ne pouvez pas vous retirer vous-même.');
         }
 
+        $this->handleMemberDeparture($membership);
+
+        return back()->with('success', "Le membre a été retiré de la colocation.");
+    }
+
+    private function handleMemberDeparture(Membership $membership)
+    {
+        $user = $membership->user;
+        $colocation = $membership->colocation;
+        $ownerMembership = $colocation->memberships()->where('role', 'owner')->first();
+        $owner = $ownerMembership->user;
+
+        // Check for debts
+        $debts = \App\Models\Settlement::where('debtor_id', $user->id)->get();
+
+        if ($debts->count() > 0) {
+            // Apply reputation penalty
+            $user->update(['reputation' => -1]);
+
+            // Transfer debts to owner
+            foreach ($debts as $debt) {
+                if ($debt->creditor_id === $owner->id) {
+                    // Debt to owner is absorbed/deleted
+                    $debt->delete();
+                } else {
+                    // Debt to others is transferred to owner
+                    $debt->update(['debtor_id' => $owner->id]);
+                }
+            }
+        }
+
         $membership->update([
             'is_active' => false,
             'left_at' => now()
         ]);
-
-        return back()->with('success', "Le membre a été retiré de la colocation.");
     }
 }
