@@ -27,9 +27,9 @@
                 <form action="{{ route('categories.store') }}" method="POST" class="space-y-4">
                     @csrf
                     <div>
-                        <label for="name" class="block text-sm font-bold text-gray-700 mb-2 px-1 text-right">Nom de la catégorie</label>
+                        <label for="name" class="block text-sm font-bold text-gray-700 mb-2 px-1">Nom de la catégorie</label>
                         <input type="text" name="name" id="name" placeholder="Ex: Courses, Loyer..." required 
-                            class="w-full px-5 py-3.5 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 transition-all outline-none text-right">
+                            class="w-full px-5 py-3.5 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 transition-all outline-none">
                     </div>
                     <button type="submit" class="w-full py-4 bg-brand-600 text-white font-bold rounded-2xl shadow-lg shadow-brand-500/25 hover:bg-brand-700 hover:-translate-y-1 transition-all">
                         Ajouter
@@ -64,30 +64,31 @@
 
                 <div class="divide-y divide-gray-50">
                     @forelse($categories as $category)
-                        <div class="p-6 flex items-center justify-between hover:bg-gray-50 transition-colors group">
-                            <div class="flex-1 mr-4">
-                                <form action="{{ route('categories.update', $category) }}" method="POST" class="flex items-center gap-3">
+                        <div class="p-6 flex items-center justify-between hover:bg-gray-50/50 transition-colors">
+                            <form action="{{ route('categories.update', $category) }}" method="POST" class="flex-1 flex items-center gap-4">
+                                @csrf
+                                @method('PATCH')
+                                <input type="text" name="name" value="{{ $category->name }}" 
+                                    class="flex-1 bg-transparent border-transparent focus:bg-white focus:border-brand-200 focus:ring-4 focus:ring-brand-500/5 rounded-xl px-4 py-2 font-bold text-gray-900 transition-all border outline-none">
+                                
+                                <button type="submit" class="p-2.5 text-brand-600 hover:bg-brand-50 rounded-xl transition-all" title="Enregistrer les modifications">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path>
+                                    </svg>
+                                </button>
+                            </form>
+                            
+                            <div class="flex items-center pl-4 border-l border-gray-100 ml-2">
+                                <form action="{{ route('categories.destroy', $category) }}" method="POST" onsubmit="return confirm('Voulez-vous vraiment supprimer cette catégorie ?')">
                                     @csrf
-                                    @method('PATCH')
-                                    <input type="text" name="name" value="{{ $category->name }}" 
-                                        class="bg-transparent border-transparent focus:bg-white focus:border-brand-200 focus:ring-4 focus:ring-brand-500/5 rounded-xl px-3 py-1.5 font-bold text-gray-900 transition-all w-full max-w-xs text-right">
-                                    <button type="submit" class="opacity-0 group-hover:opacity-100 p-2 text-brand-600 hover:bg-brand-100 rounded-lg transition-all" title="Enregistrer">
+                                    @method('DELETE')
+                                    <button type="submit" class="p-2.5 text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded-xl transition-all" title="Supprimer">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                                         </svg>
                                     </button>
                                 </form>
                             </div>
-                            
-                            <form action="{{ route('categories.destroy', $category) }}" method="POST" onsubmit="return confirm('Voulez-vous vraiment supprimer cette catégorie ?')">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="p-3 text-rose-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                                    </svg>
-                                </button>
-                            </form>
                         </div>
                     @empty
                         <div class="p-12 text-center">
