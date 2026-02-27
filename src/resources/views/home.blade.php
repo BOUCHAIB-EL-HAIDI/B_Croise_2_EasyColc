@@ -154,6 +154,19 @@
                         @if($membership->role === 'owner')
                             <hr class="my-6 border-white/10">
                             
+                            <div class="mb-8">
+                                <p class="text-sm font-bold text-gray-400 uppercase tracking-widest mb-3">Administration</p>
+                                <a href="{{ route('categories.index') }}" class="flex items-center justify-between w-full p-4 bg-white/5 border border-white/10 rounded-2xl hover:bg-white/10 hover:border-brand-500/50 transition-all group">
+                                    <div class="flex items-center gap-3">
+                                        <div class="p-2 bg-brand-500/20 text-brand-400 rounded-lg group-hover:scale-110 transition-transform">🏷️</div>
+                                        <span class="text-sm font-bold">Gérer les catégories</span>
+                                    </div>
+                                    <svg class="w-5 h-5 text-gray-500 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                    </svg>
+                                </a>
+                            </div>
+
                             <div class="mb-6">
                                 <p class="text-sm font-bold text-gray-400 uppercase tracking-widest mb-3">Inviter un membre</p>
                                 <form action="{{ route('invitations.store') }}" method="POST" class="space-y-3">
