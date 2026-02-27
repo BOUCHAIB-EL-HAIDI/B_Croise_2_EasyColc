@@ -4,11 +4,16 @@
 
 @section('content')
 <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-    <div class="mb-12">
-        <h1 class="text-3xl md:text-5xl font-extrabold text-gray-900 tracking-tight mb-2">
-            Mon <span class="text-brand-600">Profil</span> 👤
-        </h1>
-        <p class="text-lg text-gray-600 font-medium"> Vos informations personnelles et votre statut au sein de la communauté. </p>
+    <div class="mb-12 flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div>
+            <h1 class="text-3xl md:text-5xl font-extrabold text-gray-900 tracking-tight mb-2">
+                Mon <span class="text-brand-600">Profil</span> 👤
+            </h1>
+            <p class="text-lg text-gray-600 font-medium"> Vos informations personnelles et votre statut au sein de la communauté. </p>
+        </div>
+        <a href="{{ route('home') }}" class="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-gray-700 font-bold rounded-2xl border border-gray-100 shadow-sm hover:border-brand-200 hover:bg-brand-50 transition-all">
+            Retour à l'accueil
+        </a>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
