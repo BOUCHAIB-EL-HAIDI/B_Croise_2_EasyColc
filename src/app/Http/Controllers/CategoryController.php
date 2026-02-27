@@ -33,4 +33,22 @@ class CategoryController extends Controller
 
         return back()->with('success', 'Catégorie ajoutée avec succès !');
     }
+
+    public function update(Request $request, Category $category)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+
+        $user = Auth::user();
+        if ($category->colocation_id !== $user->activeMembership->colocation_id) {
+            abort(403);
+        }
+
+        $category->update([
+            'name' => $request->name,
+        ]);
+
+        return back()->with('success', 'Catégorie mise à jour avec succès !');
+    }
 }

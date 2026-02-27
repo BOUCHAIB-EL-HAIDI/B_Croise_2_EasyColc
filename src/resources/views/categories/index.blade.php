@@ -59,7 +59,17 @@
                     @forelse($categories as $category)
                         <div class="p-6 flex items-center justify-between hover:bg-gray-50 transition-colors group">
                             <div class="flex-1 mr-4">
-                                <span class="font-bold text-gray-900">{{ $category->name }}</span>
+                                <form action="{{ route('categories.update', $category) }}" method="POST" class="flex items-center gap-3">
+                                    @csrf
+                                    @method('PATCH')
+                                    <input type="text" name="name" value="{{ $category->name }}" 
+                                        class="bg-transparent border-transparent focus:bg-white focus:border-brand-200 focus:ring-4 focus:ring-brand-500/5 rounded-xl px-3 py-1.5 font-bold text-gray-900 transition-all w-full max-w-xs text-right">
+                                    <button type="submit" class="opacity-0 group-hover:opacity-100 p-2 text-brand-600 hover:bg-brand-100 rounded-lg transition-all" title="Enregistrer">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                    </button>
+                                </form>
                             </div>
                         </div>
                     @empty
