@@ -8,10 +8,12 @@ use App\Http\Controllers\AuthController;
 
 
 use App\Http\Controllers\ColocationController;
+use App\Http\Controllers\UserController;
 
 Route::get('/' , [HomeController::class , 'welcome'])->name('welcome');
 
 Route::middleware(['auth'])->group(function () {
+    Route::get('/profile', [UserController::class, 'show'])->name('profile.show');
     Route::get('/colocations/create', [ColocationController::class, 'create'])->name('colocations.create');
     Route::post('/colocations', [ColocationController::class, 'store'])->name('colocations.store');
     Route::post('/colocations/{colocation}/cancel', [ColocationController::class, 'cancel'])->name('colocations.cancel');

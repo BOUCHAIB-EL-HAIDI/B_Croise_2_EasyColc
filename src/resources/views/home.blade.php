@@ -4,9 +4,8 @@
 
 @section('content')
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <!-- Top Action Bar -->
     <div class="flex justify-end mb-8">
-        <a href="#" class="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-gray-700 font-bold rounded-2xl border border-gray-100 shadow-sm hover:border-brand-200 hover:bg-brand-50 transition-all group">
+        <a href="{{ route('profile.show') }}" class="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-gray-700 font-bold rounded-2xl border border-gray-100 shadow-sm hover:border-brand-200 hover:bg-brand-50 transition-all group">
             <div class="p-1.5 bg-gray-50 text-gray-500 rounded-lg group-hover:bg-brand-100 group-hover:text-brand-600 transition-colors">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
@@ -16,7 +15,6 @@
         </a>
     </div>
 
-    <!-- Header Section -->
     <header class="mb-12">
         <h1 class="text-3xl md:text-5xl font-extrabold text-gray-900 tracking-tight">
             Bonjour, <span class="bg-clip-text text-transparent bg-gradient-to-r from-brand-600 to-brand-800">{{ Auth::user()->name ?? 'Colocataire' }}</span> 👋
@@ -26,7 +24,6 @@
         </p>
     </header>
 
-    <!-- Flash Messages -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
         @if(session('success'))
             <div class="mb-4 p-4 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-2xl flex items-center gap-3">
@@ -47,7 +44,6 @@
         @endif
     </div>
 
-    <!-- Dashboard Content -->
     <div class="space-y-12">
         @php 
             $membership = Auth::user()->activeMembership;
@@ -56,9 +52,7 @@
         @endphp
 
         @if(!$hasActiveColocation)
-            <!-- EMPTY STATE: No Active Colocation -->
             <section class="relative overflow-hidden bg-brand-600 rounded-[48px] p-8 md:p-16 text-white shadow-2xl shadow-brand-500/40">
-                <!-- Background Decoration -->
                 <div class="absolute top-0 right-0 -translate-y-1/2 translate-x-1/4 w-96 h-96 bg-white/10 rounded-full blur-3xl"></div>
                 <div class="absolute bottom-0 left-0 translate-y-1/2 -translate-x-1/4 w-64 h-64 bg-brand-400/20 rounded-full blur-2xl"></div>
 
@@ -84,9 +78,7 @@
                 </div>
             </section>
         @else
-            <!-- ACTIVE STATE: User has a colocation -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <!-- Main Stats -->
                 <div class="lg:col-span-2 space-y-8">
                     <div class="bg-white p-8 rounded-[40px] border border-gray-100 shadow-sm mb-6">
                         <h2 class="text-2xl font-bold mb-2">Colocation : {{ $colocation->name }}</h2>
@@ -94,7 +86,6 @@
                     </div>
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- Card: Owed to you -->
                         <div class="bg-white p-8 rounded-[40px] border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all">
                             <div class="flex items-center justify-between mb-6">
                                 <div class="p-3 bg-emerald-50 text-emerald-600 rounded-2xl">
@@ -108,7 +99,6 @@
                             <h3 class="text-4xl font-black text-gray-900">0.00 €</h3>
                         </div>
 
-                        <!-- Card: You owe -->
                         <div class="bg-white p-8 rounded-[40px] border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all">
                             <div class="flex items-center justify-between mb-6">
                                 <div class="p-3 bg-rose-50 text-rose-600 rounded-2xl">
@@ -123,7 +113,6 @@
                         </div>
                     </div>
 
-                    <!-- Quick Actions Grid -->
                     <section>
                         <h3 class="text-xl font-bold text-gray-900 mb-6 px-4">Actions rapides</h3>
                         <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
@@ -147,7 +136,6 @@
                     </section>
                 </div>
 
-                <!-- Sidebar column -->
                 <aside class="space-y-8">
                     <div class="bg-gray-900 rounded-[40px] p-8 text-white shadow-2xl overflow-hidden relative">
                         <div class="absolute top-0 right-0 w-32 h-32 bg-brand-500/20 rounded-full blur-3xl"></div>
@@ -175,7 +163,6 @@
                     </div>
                 </aside>
             </div>
-        @endif
         @endif
     </div>
 </div>

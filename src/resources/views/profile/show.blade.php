@@ -1,0 +1,103 @@
+@extends('layouts.app')
+
+@section('title', 'Mon Profil - EasyColoc')
+
+@section('content')
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="mb-12">
+        <h1 class="text-3xl md:text-5xl font-extrabold text-gray-900 tracking-tight mb-2">
+            Mon <span class="text-brand-600">Profil</span> 👤
+        </h1>
+        <p class="text-lg text-gray-600 font-medium"> Vos informations personnelles et votre statut au sein de la communauté. </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="md:col-span-1">
+            <div class="bg-white rounded-[40px] p-8 border border-gray-100 shadow-xl text-center">
+                <div class="w-24 h-24 bg-brand-600 rounded-3xl mx-auto mb-6 flex items-center justify-center text-4xl font-black text-white shadow-lg shadow-brand-500/30">
+                    {{ strtoupper(substr($user->name, 0, 1)) }}
+                </div>
+                <h2 class="text-2xl font-bold text-gray-900 mb-1">{{ $user->name }}</h2>
+                <p class="text-gray-500 font-medium mb-6">{{ $user->email }}</p>
+                
+                @if($user->is_global_admin)
+                    <span class="inline-flex items-center px-4 py-1.5 bg-brand-100 text-brand-700 rounded-full text-xs font-bold uppercase tracking-widest"> Admin Global </span>
+                @else
+                    <span class="inline-flex items-center px-4 py-1.5 bg-gray-100 text-gray-600 rounded-full text-xs font-bold uppercase tracking-widest"> Utilisateur </span>
+                @endif
+            </div>
+        </div>
+
+        <div class="md:col-span-2 space-y-8">
+            <div class="bg-white rounded-[40px] p-8 md:p-10 border border-gray-100 shadow-xl">
+                <h3 class="text-xl font-bold text-gray-900 mb-8 flex items-center gap-3">
+                    <span class="p-2 bg-brand-50 text-brand-600 rounded-xl">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                        </svg>
+                    </span>
+                    Statut Colocation
+                </h3>
+
+                @if($membership)
+                    <div class="space-y-6">
+                        <div class="flex justify-between items-center p-6 bg-gray-50 rounded-2xl border border-transparent hover:border-brand-200 transition-all">
+                            <div>
+                                <p class="text-sm font-bold text-gray-400 uppercase tracking-widest mb-1">Colocation actuelle</p>
+                                <p class="text-xl font-bold text-gray-900">{{ $membership->colocation->name }}</p>
+                            </div>
+                            <span class="px-4 py-2 bg-emerald-100 text-emerald-700 rounded-xl text-sm font-bold"> Actif </span>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="p-6 bg-gray-50 rounded-2xl">
+                                <p class="text-sm font-bold text-gray-400 uppercase tracking-widest mb-1">Rôle</p>
+                                <p class="text-lg font-bold text-gray-900">{{ ucfirst($membership->role) }}</p>
+                            </div>
+                            <div class="p-6 bg-gray-50 rounded-2xl">
+                                <p class="text-sm font-bold text-gray-400 uppercase tracking-widest mb-1">Membre depuis</p>
+                                <p class="text-lg font-bold text-gray-900">{{ $membership->joined_at ? date('d/m/Y', strtotime($membership->joined_at)) : 'N/A' }}</p>
+                            </div>
+                        </div>
+                    </div>
+                @else
+                    <div class="text-center py-10 px-6 border-2 border-dashed border-gray-100 rounded-[32px]">
+                        <div class="w-16 h-16 bg-gray-50 text-gray-300 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl"> ❕ </div>
+                        <p class="text-gray-500 font-medium mb-6">Vous n'êtes actuellement membre d'aucune colocation active.</p>
+                        <a href="{{ route('colocations.create') }}" class="inline-flex items-center px-6 py-3 bg-brand-600 text-white font-bold rounded-xl hover:bg-brand-700 transition-all">
+                            Créer une colocation
+                        </a>
+                    </div>
+                @endif
+            </div>
+
+            <div class="bg-gray-900 rounded-[40px] p-8 md:p-10 text-white shadow-2xl relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-brand-500/20 rounded-full blur-3xl"></div>
+                <h3 class="text-xl font-bold mb-6 relative z-10 flex items-center gap-3 text-brand-400">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                    </svg>
+                    Sécurité & Compte
+                </h3>
+                <div class="space-y-4 relative z-10">
+                    <div class="flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-white/10 hover:bg-white/10 transition-all cursor-pointer group">
+                        <span class="font-medium">Changer le mot de passe</span>
+                        <svg class="w-5 h-5 text-gray-500 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </div>
+                    <form action="{{ route('logout') }}" method="POST">
+                        @csrf
+                        <button type="submit" class="w-full flex items-center justify-between p-4 bg-rose-500/10 rounded-2xl border border-rose-500/20 hover:bg-rose-500/20 transition-all text-rose-400">
+                            <span class="font-bold">Déconnexion de l'appareil</span>
+                            <svg class="w-5 h-5 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                            </svg>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endsection
