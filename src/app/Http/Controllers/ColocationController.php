@@ -72,4 +72,52 @@ class ColocationController extends Controller
 
         return redirect('/home')->with('success', 'Colocation annulée avec succès.');
     }
+
+    public function leave()
+    {
+        $user = Auth::user();
+        $membership = $user->activeMembership;
+
+        if (!$membership) {
+            return back()->with('error', 'Vous n\'êtes pas dans une colocation.');
+        }
+
+        if ($membership->role === 'owner') {
+            return back()->with('error', 'Le propriétaire ne peut pas quitter la colocation. Vous devez soit annuler la colocation, soit transférer la propriété.');
+        }
+
+        $membership->update([
+            'is_active' => false,
+            'left_at' => now()
+        ]);
+
+        return redirect('/home')->with('success', 'Vous avez quitté la colocation.');
+    }
+
+    public function removeMember(Membership $membership)
+    {
+        $currentUser = Auth::user();
+        $currentMembership = $currentUser->activeMembership;
+
+        // Security: Only the owner of the colocation can remove members
+        if (!$currentMembership || $currentMembership->role !== 'owner') {
+            return back()->with('error', 'Seul le propriétaire peut retirer des membres.');
+        }
+
+        // Check if the membership to remove belongs to the same colocation
+        if ($membership->colocation_id !== $currentMembership->colocation_id) {
+            return back()->with('error', 'Action non autorisée.');
+        }
+
+        if ($membership->role === 'owner') {
+            return back()->with('error', 'Vous ne pouvez pas vous retirer vous-même.');
+        }
+
+        $membership->update([
+            'is_active' => false,
+            'left_at' => now()
+        ]);
+
+        return back()->with('success', "Le membre a été retiré de la colocation.");
+    }
 }

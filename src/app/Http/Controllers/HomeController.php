@@ -70,7 +70,7 @@ class HomeController extends Controller
                 $status = "vous doit";
                 $color = "emerald";
             } elseif ($balance < 0) {
-                $status = "Vous devez";
+                $status = "Vous devez à";
                 $color = "rose";
             } else {
                 $status = "À jour";

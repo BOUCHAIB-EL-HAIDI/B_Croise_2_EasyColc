@@ -167,53 +167,66 @@
                 </div>
 
                 <aside class="space-y-8">
-                    <!-- Splitwise-style Balance Breakdown -->
-                    <div class="bg-white rounded-[40px] p-8 border border-gray-100 shadow-sm">
-                        <h3 class="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
-                            <span>Soldes détaillés</span>
-                            <span class="text-xs font-bold px-2 py-1 bg-gray-100 text-gray-400 rounded-lg uppercase tracking-wider">Style Splitwise</span>
-                        </h3>
-                        <div class="space-y-4">
+                    <!-- Premium Balance Breakdown -->
+                    <div class="bg-white rounded-[40px] p-8 border border-gray-100 shadow-sm transition-all hover:shadow-xl">
+                        <div class="flex items-center justify-between mb-8">
+                            <h3 class="text-xl font-bold text-gray-900 tracking-tight">Soldes</h3>
+                            <div class="p-2 bg-gray-50 rounded-xl">
+                                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                            </div>
+                        </div>
+
+                        <div class="space-y-6">
                             @forelse($memberBalances as $item)
-                                <div class="flex flex-col p-5 bg-{{ $item['color'] }}-50/30 border border-{{ $item['color'] }}-100 rounded-3xl transition-all hover:shadow-md">
-                                    <div class="flex items-center justify-between mb-2">
-                                        <div class="flex items-center gap-3">
-                                            <div class="w-10 h-10 bg-{{ $item['color'] }}-100 text-{{ $item['color'] }}-700 rounded-full flex items-center justify-center font-bold text-sm">
+                                <div class="relative p-6 rounded-[32px] overflow-hidden group transition-all @if($item['raw_balance'] > 0) bg-emerald-50/40 border border-emerald-100/50 @elseif($item['raw_balance'] < 0) bg-rose-50/40 border border-rose-100/50 @else bg-gray-50/50 border border-gray-100 @endif">
+                                    <div class="relative z-10 flex items-center justify-between">
+                                        <div class="flex items-center gap-4">
+                                            <div class="w-12 h-12 @if($item['raw_balance'] > 0) bg-emerald-100 text-emerald-700 @elseif($item['raw_balance'] < 0) bg-rose-100 text-rose-700 @else bg-gray-100 text-gray-700 @endif rounded-2xl flex items-center justify-center font-bold text-lg shadow-sm border @if($item['raw_balance'] > 0) border-emerald-200 @elseif($item['raw_balance'] < 0) border-rose-200 @else border-gray-200 @endif">
                                                 {{ substr($item['user']->name, 0, 1) }}
                                             </div>
-                                            <span class="font-bold text-gray-800">{{ $item['user']->name }}</span>
+                                            <div>
+                                                @if($item['raw_balance'] > 0)
+                                                    <p class="text-sm font-bold text-emerald-800 mb-0.5">{{ $item['user']->name }}</p>
+                                                    <p class="text-xs font-bold text-emerald-600 uppercase tracking-widest">{{ $item['status'] }}</p>
+                                                @elseif($item['raw_balance'] < 0)
+                                                    <p class="text-sm font-bold text-rose-800 mb-0.5">{{ $item['status'] }}</p>
+                                                    <p class="text-xs font-bold text-rose-600 uppercase tracking-widest">{{ $item['user']->name }}</p>
+                                                @else
+                                                    <p class="text-sm font-bold text-gray-800 mb-0.5">{{ $item['user']->name }}</p>
+                                                    <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">{{ $item['status'] }}</p>
+                                                @endif
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="text-right">
+                                            @if($item['raw_balance'] != 0)
+                                                <span class="text-xl font-black @if($item['raw_balance'] > 0) text-emerald-600 @else text-rose-600 @endif">
+                                                    {{ number_format($item['balance'], 2) }} €
+                                                </span>
+                                            @else
+                                                <span class="text-sm font-bold text-gray-400">0.00 €</span>
+                                            @endif
                                         </div>
                                     </div>
                                     
-                                    <div class="flex items-center gap-2">
-                                        @if($item['raw_balance'] > 0)
-                                            <span class="text-sm font-bold text-emerald-600">
-                                                {{ $item['status'] }} <span class="text-lg"> {{ number_format($item['balance'], 2) }} €</span>
-                                            </span>
-                                        @elseif($item['raw_balance'] < 0)
-                                            <span class="text-sm font-bold text-rose-600">
-                                                {{ $item['status'] }} <span class="text-lg"> {{ number_format($item['balance'], 2) }} €</span>
-                                            </span>
-                                        @else
-                                            <span class="text-sm font-bold text-gray-400">
-                                                {{ $item['status'] }}
-                                            </span>
-                                        @endif
-                                    </div>
+                                    <!-- Decorative gradient background on hover -->
+                                    <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity bg-gradient-to-br @if($item['raw_balance'] > 0) from-emerald-100/20 to-transparent @elseif($item['raw_balance'] < 0) from-rose-100/20 to-transparent @else from-gray-100/20 to-transparent @endif"></div>
                                 </div>
                             @empty
-                                <div class="text-center py-8">
-                                    <span class="text-3xl mb-2 block">🤝</span>
-                                    <p class="text-sm text-gray-400 font-medium">Vous êtes le seul membre actif.</p>
+                                <div class="text-center py-10 bg-gray-50 rounded-[32px] border border-dashed border-gray-200">
+                                    <span class="text-4xl mb-3 block">🤝</span>
+                                    <p class="text-sm text-gray-500 font-bold">Votre colocation est à jour !</p>
                                 </div>
                             @endforelse
                         </div>
 
-                        <a href="{{ route('expenses.index') }}" class="mt-8 w-full flex items-center justify-center gap-2 py-4 bg-gray-50 text-gray-600 font-bold rounded-2xl border border-dashed border-gray-200 hover:bg-gray-100 hover:border-gray-300 transition-all">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <a href="{{ route('expenses.index') }}" class="mt-10 flex items-center justify-center gap-3 w-full py-5 bg-gray-900 text-white font-bold rounded-2xl shadow-xl shadow-gray-900/10 hover:bg-gray-800 hover:-translate-y-1 transition-all">
+                            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5S19.832 5.477 21 6.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
                             </svg>
-                            Voir l'historique complet
+                            Journal complet
                         </a>
                     </div>
 
@@ -221,16 +234,45 @@
                         <div class="absolute top-0 right-0 w-32 h-32 bg-brand-500/20 rounded-full blur-3xl"></div>
                         <h3 class="text-lg font-bold mb-6 relative z-10">Ma Coloc'</h3>
                         <div class="space-y-4 relative z-10">
-                            @foreach($colocation->memberships()->where('is_active', true)->get() as $member)
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 rounded-full bg-brand-500 flex items-center justify-center font-bold">
-                                        {{ strtoupper(substr($member->user->name, 0, 1)) }}
+                            @foreach($colocation->memberships()->where('is_active', true)->get() as $m)
+                                <div class="flex items-center justify-between group/member">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-full bg-brand-500 flex items-center justify-center font-bold">
+                                            {{ strtoupper(substr($m->user->name, 0, 1)) }}
+                                        </div>
+                                        <div>
+                                            <p class="font-medium text-white leading-none mb-1">{{ $m->user->name }}</p>
+                                            <p class="text-[10px] text-white/50 uppercase tracking-widest font-bold">{{ $m->role === 'owner' ? 'Propriétaire' : 'Membre' }}</p>
+                                        </div>
                                     </div>
-                                    <span class="font-medium">{{ $member->user->name }} ({{ ucfirst($member->role) }})</span>
+                                    
+                                    @if($membership->role === 'owner' && $m->user_id !== Auth::id())
+                                        <form action="{{ route('colocations.members.remove', $m->id) }}" method="POST" onsubmit="return confirm('Retirer ce membre ?')">
+                                            @csrf
+                                            <button type="submit" class="opacity-0 group-hover/member:opacity-100 p-2 text-rose-400 hover:text-rose-500 transition-all">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                                </svg>
+                                            </button>
+                                        </form>
+                                    @endif
                                 </div>
                             @endforeach
                         </div>
                         
+                        @if($membership->role !== 'owner')
+                            <hr class="my-6 border-white/10 relative z-10">
+                            <form action="{{ route('colocations.leave') }}" method="POST" onsubmit="return confirm('Voulez-vous vraiment quitter la colocation ?')">
+                                @csrf
+                                <button type="submit" class="relative z-10 flex items-center gap-2 text-sm font-bold text-rose-400 hover:text-rose-500 transition-colors">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                                    </svg>
+                                    Quitter la colocation
+                                </button>
+                            </form>
+                        @endif
+
                         @if($membership->role === 'owner')
                             <hr class="my-6 border-white/10">
                             

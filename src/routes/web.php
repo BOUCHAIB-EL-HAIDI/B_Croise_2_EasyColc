@@ -24,6 +24,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/colocations/create', [ColocationController::class, 'create'])->name('colocations.create');
     Route::post('/colocations', [ColocationController::class, 'store'])->name('colocations.store');
     Route::post('/colocations/{colocation}/cancel', [ColocationController::class, 'cancel'])->name('colocations.cancel');
+    Route::post('/colocations/leave', [ColocationController::class, 'leave'])->name('colocations.leave');
+    Route::post('/colocations/members/{membership}/remove', [ColocationController::class, 'removeMember'])->name('colocations.members.remove');
 
     // Category Management - Owner only
     Route::middleware(['role:owner'])->group(function () {
