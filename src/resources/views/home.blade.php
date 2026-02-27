@@ -96,7 +96,7 @@
                                 <span class="text-xs font-bold text-emerald-600 uppercase">Solde positif</span>
                             </div>
                             <p class="text-sm font-bold text-gray-500 uppercase tracking-widest mb-1">On vous doit</p>
-                            <h3 class="text-4xl font-black text-gray-900">0.00 €</h3>
+                            <h3 class="text-4xl font-black text-gray-900">{{ number_format($owedToMe, 2) }} €</h3>
                         </div>
 
                         <div class="bg-white p-8 rounded-[40px] border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all">
@@ -109,9 +109,39 @@
                                 <span class="text-xs font-bold text-rose-600 uppercase">À régler</span>
                             </div>
                             <p class="text-sm font-bold text-gray-500 uppercase tracking-widest mb-1">Vous devez</p>
-                            <h3 class="text-4xl font-black text-gray-900">0.00 €</h3>
+                            <h3 class="text-4xl font-black text-gray-900">{{ number_format($iOwe, 2) }} €</h3>
                         </div>
                     </div>
+
+                    <!-- Recent Expenses Section -->
+                    <section class="bg-white rounded-[40px] border border-gray-100 shadow-sm overflow-hidden">
+                        <div class="p-8 border-b border-gray-50 flex justify-between items-center">
+                            <h3 class="text-xl font-bold text-gray-900">Dépenses récentes</h3>
+                            <a href="{{ route('expenses.index') }}" class="text-sm font-bold text-brand-600 hover:text-brand-700">Voir tout</a>
+                        </div>
+                        <div class="divide-y divide-gray-50">
+                            @forelse($recentExpenses as $expense)
+                                <div class="p-6 flex items-center justify-between hover:bg-gray-50/50 transition-colors">
+                                    <div class="flex items-center gap-4">
+                                        <div class="w-12 h-12 bg-gray-50 rounded-2xl flex items-center justify-center text-xl">
+                                            🏷️
+                                        </div>
+                                        <div>
+                                            <p class="font-bold text-gray-900">{{ $expense->title }}</p>
+                                            <p class="text-xs text-gray-500 font-medium">
+                                                {{ $expense->category->name }} • {{ $expense->payer->name }} • {{ date('d/m/Y', strtotime($expense->expense_date)) }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <span class="font-black text-gray-900">{{ number_format($expense->amount, 2) }} €</span>
+                                </div>
+                            @empty
+                                <div class="p-12 text-center text-gray-400 font-medium italic">
+                                    Aucune dépense récente.
+                                </div>
+                            @endforelse
+                        </div>
+                    </section>
 
                     <section>
                         <h3 class="text-xl font-bold text-gray-900 mb-6 px-4">Actions rapides</h3>
@@ -137,6 +167,32 @@
                 </div>
 
                 <aside class="space-y-8">
+                    <!-- Debt/Credit Breakdown -->
+                    <div class="bg-white rounded-[40px] p-8 border border-gray-100 shadow-sm">
+                        <h3 class="text-lg font-bold text-gray-900 mb-6">Détails des soldes</h3>
+                        <div class="space-y-4">
+                            @forelse($memberBalances as $item)
+                                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-2xl">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-8 h-8 bg-brand-100 text-brand-700 rounded-full flex items-center justify-center font-bold text-xs">
+                                            {{ substr($item['user']->name, 0, 1) }}
+                                        </div>
+                                        <span class="text-sm font-bold text-gray-700">{{ $item['user']->name }}</span>
+                                    </div>
+                                    @if($item['balance'] > 0)
+                                        <span class="text-sm font-bold text-emerald-600">+{{ number_format($item['balance'], 2) }} €</span>
+                                    @elseif($item['balance'] < 0)
+                                        <span class="text-sm font-bold text-rose-600">{{ number_format($item['balance'], 2) }} €</span>
+                                    @else
+                                        <span class="text-sm font-bold text-gray-400">0.00 €</span>
+                                    @endif
+                                </div>
+                            @empty
+                                <p class="text-sm text-gray-400 italic text-center py-4">Vous êtes le seul membre actif.</p>
+                            @endforelse
+                        </div>
+                    </div>
+
                     <div class="bg-gray-900 rounded-[40px] p-8 text-white shadow-2xl overflow-hidden relative">
                         <div class="absolute top-0 right-0 w-32 h-32 bg-brand-500/20 rounded-full blur-3xl"></div>
                         <h3 class="text-lg font-bold mb-6 relative z-10">Ma Coloc'</h3>
