@@ -21,19 +21,31 @@
         <div class="lg:col-span-1">
             <div class="bg-white rounded-[40px] p-8 border border-gray-100 shadow-xl sticky top-8">
                 <h3 class="text-xl font-bold text-gray-900 mb-6 flex items-center gap-3">
-                    <span class="p-2 bg-brand-50 text-brand-600 rounded-xl">➕</span>
-                    Nouvelle catégorie
+                    <span class="p-2 bg-brand-50 text-brand-600 rounded-xl">{{ isset($categoryToEdit) ? '✏️' : '➕' }}</span>
+                    {{ isset($categoryToEdit) ? 'Modifier la catégorie' : 'Nouvelle catégorie' }}
                 </h3>
-                <form action="{{ route('categories.store') }}" method="POST" class="space-y-4">
+
+                <form action="{{ isset($categoryToEdit) ? route('categories.update', $categoryToEdit) : route('categories.store') }}" method="POST" class="space-y-4">
                     @csrf
+                    @if(isset($categoryToEdit))
+                        @method('PATCH')
+                    @endif
+                    
                     <div>
                         <label for="name" class="block text-sm font-bold text-gray-700 mb-2 px-1">Nom de la catégorie</label>
-                        <input type="text" name="name" id="name" placeholder="Ex: Courses, Loyer..." required 
+                        <input type="text" name="name" id="name" value="{{ isset($categoryToEdit) ? $categoryToEdit->name : '' }}" placeholder="Ex: Courses, Loyer..." required 
                             class="w-full px-5 py-3.5 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 transition-all outline-none">
                     </div>
+                    
                     <button type="submit" class="w-full py-4 bg-brand-600 text-white font-bold rounded-2xl shadow-lg shadow-brand-500/25 hover:bg-brand-700 hover:-translate-y-1 transition-all">
-                        Ajouter
+                        {{ isset($categoryToEdit) ? 'Mettre à jour' : 'Ajouter' }}
                     </button>
+
+                    @if(isset($categoryToEdit))
+                        <a href="{{ route('categories.index') }}" class="block w-full text-center py-2 text-gray-500 font-medium hover:text-gray-700 transition-colors">
+                            Annuler la modification
+                        </a>
+                    @endif
                 </form>
             </div>
         </div>
@@ -65,20 +77,19 @@
                 <div class="divide-y divide-gray-50">
                     @forelse($categories as $category)
                         <div class="p-6 flex items-center justify-between hover:bg-gray-50/50 transition-colors">
-                            <form action="{{ route('categories.update', $category) }}" method="POST" class="flex-1 flex items-center gap-4">
-                                @csrf
-                                @method('PATCH')
-                                <input type="text" name="name" value="{{ $category->name }}" 
-                                    class="flex-1 bg-transparent border-transparent focus:bg-white focus:border-brand-200 focus:ring-4 focus:ring-brand-500/5 rounded-xl px-4 py-2 font-bold text-gray-900 transition-all border outline-none">
-                                
-                                <button type="submit" class="p-2.5 text-brand-600 hover:bg-brand-50 rounded-xl transition-all" title="Enregistrer les modifications">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path>
-                                    </svg>
-                                </button>
-                            </form>
+                            <div class="flex-1">
+                                <span class="text-lg font-bold text-gray-900">{{ $category->name }}</span>
+                            </div>
                             
-                            <div class="flex items-center pl-4 border-l border-gray-100 ml-2">
+                            <div class="flex items-center gap-2">
+                                <!-- Simple Edit Button -->
+                                <a href="{{ route('categories.index', ['edit_id' => $category->id]) }}" class="p-2.5 text-brand-600 hover:bg-brand-50 rounded-xl transition-all" title="Modifier">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                    </svg>
+                                </a>
+
+                                <!-- Delete Button -->
                                 <form action="{{ route('categories.destroy', $category) }}" method="POST" onsubmit="return confirm('Voulez-vous vraiment supprimer cette catégorie ?')">
                                     @csrf
                                     @method('DELETE')

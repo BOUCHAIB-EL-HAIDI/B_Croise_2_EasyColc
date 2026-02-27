@@ -8,13 +8,20 @@ use Illuminate\Support\Facades\Auth;
 
 class CategoryController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $user = Auth::user();
         $colocation = $user->activeMembership->colocation;
         $categories = $colocation->categories()->orderBy('name')->get();
 
-        return view('categories.index', compact('categories', 'colocation'));
+        $categoryToEdit = null;
+        if ($request->has('edit_id')) {
+            $categoryToEdit = Category::where('id', $request->edit_id)
+                ->where('colocation_id', $colocation->id)
+                ->first();
+        }
+
+        return view('categories.index', compact('categories', 'colocation', 'categoryToEdit'));
     }
 
     public function store(Request $request)
