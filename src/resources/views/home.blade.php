@@ -167,30 +167,54 @@
                 </div>
 
                 <aside class="space-y-8">
-                    <!-- Debt/Credit Breakdown -->
+                    <!-- Splitwise-style Balance Breakdown -->
                     <div class="bg-white rounded-[40px] p-8 border border-gray-100 shadow-sm">
-                        <h3 class="text-lg font-bold text-gray-900 mb-6">Détails des soldes</h3>
+                        <h3 class="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
+                            <span>Soldes détaillés</span>
+                            <span class="text-xs font-bold px-2 py-1 bg-gray-100 text-gray-400 rounded-lg uppercase tracking-wider">Style Splitwise</span>
+                        </h3>
                         <div class="space-y-4">
                             @forelse($memberBalances as $item)
-                                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-2xl">
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-8 h-8 bg-brand-100 text-brand-700 rounded-full flex items-center justify-center font-bold text-xs">
-                                            {{ substr($item['user']->name, 0, 1) }}
+                                <div class="flex flex-col p-5 bg-{{ $item['color'] }}-50/30 border border-{{ $item['color'] }}-100 rounded-3xl transition-all hover:shadow-md">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 bg-{{ $item['color'] }}-100 text-{{ $item['color'] }}-700 rounded-full flex items-center justify-center font-bold text-sm">
+                                                {{ substr($item['user']->name, 0, 1) }}
+                                            </div>
+                                            <span class="font-bold text-gray-800">{{ $item['user']->name }}</span>
                                         </div>
-                                        <span class="text-sm font-bold text-gray-700">{{ $item['user']->name }}</span>
                                     </div>
-                                    @if($item['balance'] > 0)
-                                        <span class="text-sm font-bold text-emerald-600">+{{ number_format($item['balance'], 2) }} €</span>
-                                    @elseif($item['balance'] < 0)
-                                        <span class="text-sm font-bold text-rose-600">{{ number_format($item['balance'], 2) }} €</span>
-                                    @else
-                                        <span class="text-sm font-bold text-gray-400">0.00 €</span>
-                                    @endif
+                                    
+                                    <div class="flex items-center gap-2">
+                                        @if($item['raw_balance'] > 0)
+                                            <span class="text-sm font-bold text-emerald-600">
+                                                {{ $item['status'] }} <span class="text-lg"> {{ number_format($item['balance'], 2) }} €</span>
+                                            </span>
+                                        @elseif($item['raw_balance'] < 0)
+                                            <span class="text-sm font-bold text-rose-600">
+                                                {{ $item['status'] }} <span class="text-lg"> {{ number_format($item['balance'], 2) }} €</span>
+                                            </span>
+                                        @else
+                                            <span class="text-sm font-bold text-gray-400">
+                                                {{ $item['status'] }}
+                                            </span>
+                                        @endif
+                                    </div>
                                 </div>
                             @empty
-                                <p class="text-sm text-gray-400 italic text-center py-4">Vous êtes le seul membre actif.</p>
+                                <div class="text-center py-8">
+                                    <span class="text-3xl mb-2 block">🤝</span>
+                                    <p class="text-sm text-gray-400 font-medium">Vous êtes le seul membre actif.</p>
+                                </div>
                             @endforelse
                         </div>
+
+                        <a href="{{ route('expenses.index') }}" class="mt-8 w-full flex items-center justify-center gap-2 py-4 bg-gray-50 text-gray-600 font-bold rounded-2xl border border-dashed border-gray-200 hover:bg-gray-100 hover:border-gray-300 transition-all">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5S19.832 5.477 21 6.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                            </svg>
+                            Voir l'historique complet
+                        </a>
                     </div>
 
                     <div class="bg-gray-900 rounded-[40px] p-8 text-white shadow-2xl overflow-hidden relative">

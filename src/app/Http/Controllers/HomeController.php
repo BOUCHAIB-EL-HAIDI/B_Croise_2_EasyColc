@@ -62,9 +62,27 @@ class HomeController extends Controller
                 ->where('debtor_id', $user->id)
                 ->sum('amount');
 
+            $balance = $owedByThem - $owedToThem;
+            $status = '';
+            $color = '';
+
+            if ($balance > 0) {
+                $status = "vous doit";
+                $color = "emerald";
+            } elseif ($balance < 0) {
+                $status = "Vous devez";
+                $color = "rose";
+            } else {
+                $status = "À jour";
+                $color = "gray";
+            }
+
             $memberBalances[] = [
                 'user' => $member->user,
-                'balance' => $owedByThem - $owedToThem
+                'balance' => abs($balance),
+                'status' => $status,
+                'color' => $color,
+                'raw_balance' => $balance
             ];
         }
 
