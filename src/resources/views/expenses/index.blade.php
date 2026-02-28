@@ -4,19 +4,30 @@
 
 @section('content')
 <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-    <div class="mb-12 flex flex-col md:flex-row md:items-center justify-between gap-6">
-        <div>
-            <h1 class="text-3xl md:text-5xl font-extrabold text-gray-900 tracking-tight mb-2">
-                Journal des <span class="text-brand-600">Dépenses</span> 📜
-            </h1>
-            <p class="text-lg text-gray-600 font-medium"> Consultez et gérez les achats de votre colocation. </p>
+    <div class="mb-12">
+        <div class="flex items-center gap-4 mb-8">
+            <a href="{{ route('home') }}" class="p-3 bg-white border border-gray-100 rounded-2xl text-gray-400 hover:text-brand-600 hover:border-brand-200 transition-all shadow-sm group">
+                <svg class="w-6 h-6 transform group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+            </a>
+            <span class="text-sm font-bold text-gray-400 uppercase tracking-widest">Retour au tableau de bord</span>
         </div>
-        <a href="{{ route('expenses.create') }}" class="inline-flex items-center gap-3 px-6 py-4 bg-brand-600 text-white font-bold rounded-2xl shadow-lg shadow-brand-500/25 hover:bg-brand-700 hover:-translate-y-1 transition-all">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-            </svg>
-            Ajouter une dépense
-        </a>
+
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div>
+                <h1 class="text-3xl md:text-5xl font-extrabold text-gray-900 tracking-tight mb-2">
+                    Journal des <span class="text-brand-600">Dépenses</span> 📜
+                </h1>
+                <p class="text-lg text-gray-600 font-medium"> Consultez et gérez les achats de votre colocation. </p>
+            </div>
+            <a href="{{ route('expenses.create') }}" class="inline-flex items-center gap-3 px-6 py-4 bg-brand-600 text-white font-bold rounded-2xl shadow-lg shadow-brand-500/25 hover:bg-brand-700 hover:-translate-y-1 transition-all">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                </svg>
+                Ajouter une dépense
+            </a>
+        </div>
     </div>
 
     @if(session('success'))

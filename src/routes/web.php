@@ -13,9 +13,18 @@ use App\Http\Controllers\InvitationController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ExpenseController;
 
+use App\Http\Controllers\AdminController;
+
 Route::get('/' , [HomeController::class , 'welcome'])->name('welcome');
 
 Route::middleware(['auth'])->group(function () {
+    // Admin Routes
+    Route::middleware(['admin'])->prefix('admin')->name('admin.')->group(function () {
+        Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+        Route::post('/users/{user}/ban', [AdminController::class, 'banUser'])->name('users.ban');
+        Route::post('/users/{user}/unban', [AdminController::class, 'unbanUser'])->name('users.unban');
+    });
+
     Route::get('/profile', [UserController::class, 'show'])->name('profile.show');
     
     Route::post('/invitations', [InvitationController::class, 'store'])->name('invitations.store');

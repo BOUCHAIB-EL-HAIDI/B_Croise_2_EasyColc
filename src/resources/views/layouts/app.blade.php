@@ -69,6 +69,15 @@
 
                 <!-- Desktop Menu -->
                 <div class="hidden md:flex items-center space-x-8">
+                    @auth
+                        <div class="flex items-center space-x-6 mr-6 border-r border-gray-100 pr-6">
+                            <a href="{{ route('home') }}" class="text-sm font-bold text-gray-600 hover:text-brand-600 transition-colors">Colocations</a>
+                            <a href="{{ route('profile.show') }}" class="text-sm font-bold text-gray-600 hover:text-brand-600 transition-colors">Mon Profil</a>
+                            @if(Auth::user()->is_global_admin)
+                                <a href="{{ route('admin.dashboard') }}" class="text-sm font-bold text-brand-600 hover:text-brand-700 transition-colors">Admin</a>
+                            @endif
+                        </div>
+                    @endauth
                     <div class="flex items-center space-x-4">
                         @guest
                             <a href="{{ route('login') }}" class="px-5 py-2.5 text-brand-600 font-semibold hover:bg-brand-50 rounded-xl transition-all">Connexion</a>
