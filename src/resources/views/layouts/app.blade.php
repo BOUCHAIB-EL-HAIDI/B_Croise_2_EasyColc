@@ -114,8 +114,18 @@
              x-transition:leave-start="opacity-100 translate-y-0"
              x-transition:leave-end="opacity-0 -translate-y-4"
              class="md:hidden glass border-t border-gray-100 pb-6">
-            <div class="px-4 py-4 space-y-2">
-                <div class="grid grid-cols-1 gap-3 pt-4 border-t border-gray-100">
+            <div class="px-4 py-4 space-y-4">
+                @auth
+                    <div class="flex flex-col space-y-3 pb-4 border-b border-gray-100">
+                        <a href="{{ route('home') }}" class="text-base font-bold text-gray-600 hover:text-brand-600 transition-colors">Colocations</a>
+                        <a href="{{ route('profile.show') }}" class="text-base font-bold text-gray-600 hover:text-brand-600 transition-colors">Mon Profil</a>
+                        @if(Auth::user()->is_global_admin)
+                            <a href="{{ route('admin.dashboard') }}" class="inline-flex items-center justify-center px-4 py-2.5 bg-brand-600 text-white font-bold rounded-xl shadow-lg shadow-brand-500/30">Dashboard Admin</a>
+                        @endif
+                    </div>
+                @endauth
+
+                <div class="grid grid-cols-1 gap-3 pt-2">
                     @guest
                         <a href="{{ route('login') }}" class="flex justify-center px-4 py-3 text-brand-600 font-bold border-2 border-brand-100 rounded-xl">Connexion</a>
                         <a href="{{ route('register') }}" class="flex justify-center px-4 py-3 bg-brand-600 text-white font-bold rounded-xl shadow-lg">S'inscrire</a>
