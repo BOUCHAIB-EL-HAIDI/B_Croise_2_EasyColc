@@ -22,7 +22,7 @@ class CheckBanned
             $request->session()->invalidate();
             $request->session()->regenerateToken();
 
-            return redirect()->route('login')->with('error', 'Votre compte a été banni. Veuillez contacter le support.');
+            return redirect()->route('login')->with('error', 'Accès interdit. Votre compte a été banni.');
         }
 
         return $next($request);

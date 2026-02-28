@@ -54,6 +54,13 @@ class AuthController extends Controller
        $credentials = $request->only('email' , 'password');
 
        if(Auth::attempt($credentials)){
+        $user = Auth::user();
+
+        if ($user->is_banned) {
+            Auth::logout();
+            return back()->with('error', 'Accès interdit. Votre compte a été banni.')->onlyInput('email');
+        }
+
         $request->session()->regenerate();
 
         if (session('invitation_token')) {

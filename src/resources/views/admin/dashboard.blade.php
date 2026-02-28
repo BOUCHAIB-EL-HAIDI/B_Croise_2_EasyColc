@@ -47,6 +47,7 @@
                 <thead>
                     <tr class="bg-gray-50 border-b border-gray-100">
                         <th class="px-8 py-5 text-sm font-bold text-gray-400 uppercase tracking-widest">Utilisateur</th>
+                        <th class="px-8 py-5 text-sm font-bold text-gray-400 uppercase tracking-widest">Reputation</th>
                         <th class="px-8 py-5 text-sm font-bold text-gray-400 uppercase tracking-widest">Status</th>
                         <th class="px-8 py-5 text-sm font-bold text-gray-400 uppercase tracking-widest">Date d'inscription</th>
                         <th class="px-8 py-5 text-sm font-bold text-gray-400 uppercase tracking-widest text-right">Actions</th>
@@ -65,6 +66,9 @@
                                         <p class="text-xs text-gray-500">{{ $user->email }}</p>
                                     </div>
                                 </div>
+                            </td>
+                            <td class="px-8 py-6">
+                                <span class="font-bold text-gray-700">{{ $user->reputation }} pts</span>
                             </td>
                             <td class="px-8 py-6">
                                 @if($user->is_global_admin)

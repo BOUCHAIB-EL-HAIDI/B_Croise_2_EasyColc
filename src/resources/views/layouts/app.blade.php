@@ -74,7 +74,7 @@
                             <a href="{{ route('home') }}" class="text-sm font-bold text-gray-600 hover:text-brand-600 transition-colors">Colocations</a>
                             <a href="{{ route('profile.show') }}" class="text-sm font-bold text-gray-600 hover:text-brand-600 transition-colors">Mon Profil</a>
                             @if(Auth::user()->is_global_admin)
-                                <a href="{{ route('admin.dashboard') }}" class="px-4 py-2 bg-amber-50 text-amber-700 border border-amber-200 rounded-xl text-sm font-bold hover:bg-amber-100 transition-all">Dashboard Admin</a>
+                                <a href="{{ route('admin.dashboard') }}" class="px-5 py-2.5 bg-brand-600 text-white font-semibold rounded-xl shadow-lg shadow-brand-500/30 hover:bg-brand-700 hover:-translate-y-0.5 transition-all text-sm">Dashboard Admin</a>
                             @endif
                         </div>
                     @endauth
