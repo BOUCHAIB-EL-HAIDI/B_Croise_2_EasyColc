@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 
 class ExpenseController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $user = Auth::user();
         $membership = $user->activeMembership;
@@ -18,13 +18,27 @@ class ExpenseController extends Controller
             return redirect('/home')->with('error', 'Vous devez faire partie d\'une colocation.');
         }
 
-        // Get all expenses for this colocation, ordered by date
-        $expenses = Expense::where('colocation_id', $membership->colocation_id)
-            ->with(['category', 'payer'])
-            ->orderBy('expense_date', 'desc')
-            ->get();
+        $query = Expense::where('colocation_id', $membership->colocation_id)
+            ->with(['category', 'payer']);
 
-        return view('expenses.index', compact('expenses'));
+        // Month Filter (Format: YYYY-MM)
+        if ($request->filled('month')) {
+            $query->whereRaw("DATE_FORMAT(expense_date, '%Y-%m') = ?", [$request->month]);
+        }
+
+        $expenses = $query->orderBy('expense_date', 'desc')->get();
+
+        // Statistics
+        $totalAmount = $expenses->sum('amount');
+        $statsByCategory = $expenses->groupBy('category_id')->map(function ($group) {
+            return [
+                'name' => $group->first()->category->name,
+                'total' => $group->sum('amount'),
+                'count' => $group->count()
+            ];
+        });
+
+        return view('expenses.index', compact('expenses', 'totalAmount', 'statsByCategory'));
     }
 
     public function create()
@@ -86,5 +100,17 @@ class ExpenseController extends Controller
         }
 
         return redirect()->route('expenses.index')->with('success', 'Dépense ajoutée et partagée avec succès !');
+    }
+
+    public function destroy(Expense $expense)
+    {
+        // Simple security check: same colocation
+        if ($expense->colocation_id !== Auth::user()->activeMembership->colocation_id) {
+            return back()->with('error', 'Action non autorisée.');
+        }
+
+        $expense->delete(); // Database Cascade deletes settlements
+
+        return redirect()->route('expenses.index')->with('success', 'Dépense supprimée définitivement.');
     }
 }

@@ -21,13 +21,41 @@
                 </h1>
                 <p class="text-lg text-gray-600 font-medium"> Consultez et gérez les achats de votre colocation. </p>
             </div>
-            <a href="{{ route('expenses.create') }}" class="inline-flex items-center gap-3 px-6 py-4 bg-brand-600 text-white font-bold rounded-2xl shadow-lg shadow-brand-500/25 hover:bg-brand-700 hover:-translate-y-1 transition-all">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                </svg>
-                Ajouter une dépense
-            </a>
+            <div class="flex flex-wrap items-center gap-4">
+                <form action="{{ route('expenses.index') }}" method="GET" class="flex items-center gap-3 bg-white p-2 rounded-2xl border border-gray-100 shadow-sm">
+                    <input type="month" name="month" value="{{ request('month') }}" class="border-none focus:ring-0 text-sm font-bold text-gray-700">
+                    <button type="submit" class="p-2 bg-brand-50 text-brand-600 rounded-xl hover:bg-brand-100 transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </button>
+                    @if(request('month'))
+                        <a href="{{ route('expenses.index') }}" class="text-xs font-bold text-gray-400 hover:text-rose-500 px-2 leading-none border-l border-gray-100">Réinitialiser</a>
+                    @endif
+                </form>
+                <a href="{{ route('expenses.create') }}" class="inline-flex items-center gap-3 px-6 py-4 bg-brand-600 text-white font-bold rounded-2xl shadow-lg shadow-brand-500/25 hover:bg-brand-700 hover:-translate-y-1 transition-all">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                    </svg>
+                    Ajouter une dépense
+                </a>
+            </div>
         </div>
+    </div>
+
+    <!-- Monthly Statistics Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+        <div class="bg-white p-8 rounded-[40px] border border-gray-100 shadow-sm">
+            <p class="text-sm font-bold text-gray-400 uppercase tracking-widest mb-1">Total période</p>
+            <h3 class="text-4xl font-black text-gray-900">{{ number_format($totalAmount, 2) }} €</h3>
+        </div>
+        @foreach($statsByCategory->take(2) as $stat)
+            <div class="bg-white p-8 rounded-[40px] border border-gray-100 shadow-sm">
+                <p class="text-sm font-bold text-gray-400 uppercase tracking-widest mb-1">{{ $stat['name'] }}</p>
+                <h3 class="text-4xl font-black text-brand-600">{{ number_format($stat['total'], 2) }} €</h3>
+                <p class="text-xs font-bold text-gray-400 mt-2 uppercase tracking-wide">{{ $stat['count'] }} dépense(s)</p>
+            </div>
+        @endforeach
     </div>
 
     @if(session('success'))
@@ -46,6 +74,7 @@
                         <th class="px-8 py-5 text-sm font-bold text-gray-400 uppercase tracking-widest">Titre / Catégorie</th>
                         <th class="px-8 py-5 text-sm font-bold text-gray-400 uppercase tracking-widest">Payé par</th>
                         <th class="px-8 py-5 text-sm font-bold text-gray-400 uppercase tracking-widest text-right">Montant</th>
+                        <th class="px-8 py-5 text-sm font-bold text-gray-400 uppercase tracking-widest text-right">Action</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-50">
@@ -71,14 +100,25 @@
                             <td class="px-8 py-6 text-right">
                                 <span class="text-xl font-black text-gray-900">{{ number_format($expense->amount, 2) }} €</span>
                             </td>
+                            <td class="px-8 py-6 text-right">
+                                <form action="{{ route('expenses.destroy', $expense) }}" method="POST" onsubmit="return confirm('Supprimer définitivement cette dépense ?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="p-2 text-gray-400 hover:text-rose-500 transition-colors">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                        </svg>
+                                    </button>
+                                </form>
+                            </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="4" class="px-8 py-20 text-center">
+                            <td colspan="5" class="px-8 py-20 text-center">
                                 <div class="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl"> 📉 </div>
-                                <p class="text-gray-500 font-bold">Aucune dépense enregistrée pour le moment.</p>
-                                <a href="{{ route('expenses.create') }}" class="text-brand-600 hover:text-brand-700 font-bold mt-2 inline-block">
-                                    Commencer par ajouter la première !
+                                <p class="text-gray-500 font-bold">Aucune dépense trouvée pour cette période.</p>
+                                <a href="{{ route('expenses.index') }}" class="text-brand-600 hover:text-brand-700 font-bold mt-2 inline-block">
+                                    Voir tout l'historique
                                 </a>
                             </td>
                         </tr>

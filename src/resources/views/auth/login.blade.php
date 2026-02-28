@@ -7,7 +7,7 @@
     <div class="max-w-md w-full space-y-8">
         <div class="text-center">
             <h2 class="mt-6 text-3xl font-extrabold text-gray-900 tracking-tight">
-                Bon retour parmi nous !
+                Accès à votre espace
             </h2>
             <p class="mt-3 text-sm text-gray-500">
                 Ou <a href="{{ route('register') }}" class="font-semibold text-brand-600 hover:text-brand-500 transition-colors">créez votre compte gratuitement</a>

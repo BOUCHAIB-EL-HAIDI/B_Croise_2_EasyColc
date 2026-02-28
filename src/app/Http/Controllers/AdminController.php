@@ -14,7 +14,20 @@ class AdminController extends Controller
         $totalColocations = Colocation::count();
         $users = User::orderBy('created_at', 'desc')->paginate(20);
 
-        return view('admin.dashboard', compact('totalUsers', 'totalColocations', 'users'));
+        // Global Platform Stats
+        $globalTotalExpenses = \App\Models\Expense::sum('amount');
+        $platformStatsByCategory = \App\Models\Category::withSum('expenses', 'amount')
+            ->orderBy('expenses_sum_amount', 'desc')
+            ->take(5)
+            ->get();
+
+        return view('admin.dashboard', compact(
+            'totalUsers', 
+            'totalColocations', 
+            'users', 
+            'globalTotalExpenses', 
+            'platformStatsByCategory'
+        ));
     }
 
     public function banUser(User $user)
