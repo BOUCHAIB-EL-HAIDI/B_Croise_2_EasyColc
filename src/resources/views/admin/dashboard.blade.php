@@ -26,7 +26,7 @@
     @endif
 
     <!-- Stats -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
         <div class="bg-white p-8 rounded-[40px] border border-gray-100 shadow-sm">
             <p class="text-sm font-bold text-gray-400 uppercase tracking-widest mb-2">Total Utilisateurs</p>
             <h3 class="text-5xl font-black text-gray-900">{{ $totalUsers }}</h3>
@@ -34,6 +34,23 @@
         <div class="bg-white p-8 rounded-[40px] border border-gray-100 shadow-sm">
             <p class="text-sm font-bold text-gray-400 uppercase tracking-widest mb-2">Total Colocations</p>
             <h3 class="text-5xl font-black text-gray-900">{{ $totalColocations }}</h3>
+        </div>
+        <div class="bg-white p-8 rounded-[40px] border border-gray-100 shadow-sm">
+            <p class="text-sm font-bold text-gray-400 uppercase tracking-widest mb-2">Dépenses Globales</p>
+            <h3 class="text-5xl font-black text-brand-600">{{ number_format($globalTotalExpenses, 2) }} €</h3>
+        </div>
+    </div>
+
+    <!-- Global Categories Stats -->
+    <div class="bg-white p-8 rounded-[40px] border border-gray-100 shadow-sm mb-12">
+        <h3 class="text-xl font-bold mb-6 italic">Top Catégories (Global)</h3>
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+            @foreach($platformStatsByCategory as $stat)
+                <div class="p-5 bg-gray-50 rounded-2xl border border-gray-100">
+                    <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1 truncate">{{ $stat->name }}</p>
+                    <p class="text-xl font-black text-brand-800">{{ number_format($stat->expenses_sum_amount, 2) }} €</p>
+                </div>
+            @endforeach
         </div>
     </div>
 
