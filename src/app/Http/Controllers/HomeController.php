@@ -101,16 +101,18 @@ class HomeController extends Controller
         }
 
         // 4. Detailed Debts for Dashboard actions
-        // Settlements where I am creditor (I can mark as PAID)
-        $myClaims = Settlement::where('creditor_id', $user->id)
+        // Settlements where I am DEBTOR and haven't sent a payment yet
+        $myDebts = Settlement::where('debtor_id', $user->id)
             ->whereDoesntHave('payments')
-            ->with(['debtor', 'expense'])
+            ->with(['creditor', 'expense'])
             ->get();
 
-        // Payments I need to CONFIRM (where I am debtor)
-        $pendingConfirmations = \App\Models\Payment::where('paid_by_id', $user->id)
+        // Payments where I am CREDITOR and status is PENDING (waiting for MY confirmation)
+        $pendingPaymentsToConfirm = \App\Models\Payment::whereHas('settlement', function($q) use ($user) {
+                $q->where('creditor_id', $user->id);
+            })
             ->where('status', 'PENDING')
-            ->with(['settlement.creditor', 'settlement.expense'])
+            ->with(['settlement.debtor', 'settlement.expense'])
             ->get();
 
         return view('home', compact(
@@ -121,8 +123,8 @@ class HomeController extends Controller
             'owedToMe', 
             'iOwe', 
             'memberBalances',
-            'myClaims',
-            'pendingConfirmations'
+            'myDebts',
+            'pendingPaymentsToConfirm'
         ));
     }
 }
