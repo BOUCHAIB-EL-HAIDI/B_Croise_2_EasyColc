@@ -4,17 +4,6 @@
 
 @section('content')
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <div class="flex justify-end mb-8">
-        <a href="{{ route('profile.show') }}" class="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-gray-700 font-bold rounded-2xl border border-gray-100 shadow-sm hover:border-brand-200 hover:bg-brand-50 transition-all group">
-            <div class="p-1.5 bg-gray-50 text-gray-500 rounded-lg group-hover:bg-brand-100 group-hover:text-brand-600 transition-colors">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                </svg>
-            </div>
-            Mon Profil
-        </a>
-    </div>
-
     <header class="mb-12">
         <h1 class="text-3xl md:text-5xl font-extrabold text-gray-900 tracking-tight">
             Bonjour, <span class="bg-clip-text text-transparent bg-gradient-to-r from-brand-600 to-brand-800">{{ Auth::user()->name ?? 'Colocataire' }}</span> 👋
