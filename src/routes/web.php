@@ -48,6 +48,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/expenses', [ExpenseController::class, 'index'])->name('expenses.index');
     Route::get('/expenses/create', [ExpenseController::class, 'create'])->name('expenses.create');
     Route::post('/expenses', [ExpenseController::class, 'store'])->name('expenses.store');
+    Route::delete('/expenses/{expense}', [ExpenseController::class, 'destroy'])->name('expenses.destroy');
 });
 
 Route::get('/invitations/{token}', [InvitationController::class, 'show'])->name('invitations.show');
