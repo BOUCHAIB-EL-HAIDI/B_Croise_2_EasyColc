@@ -132,6 +132,68 @@
                         </div>
                     </section>
 
+                    <!-- Payment & Debt Management -->
+                    <section class="space-y-6">
+                        @if($pendingConfirmations->count() > 0)
+                            <div class="bg-amber-50 border border-amber-200 rounded-[40px] p-8 shadow-sm">
+                                <h3 class="text-xl font-bold text-amber-900 mb-6 flex items-center gap-3">
+                                    <span class="animate-pulse">🔔</span> Paiements à confirmer
+                                </h3>
+                                <div class="space-y-4">
+                                    @foreach($pendingConfirmations as $payment)
+                                        <div class="bg-white p-6 rounded-3xl flex items-center justify-between shadow-sm border border-amber-100">
+                                            <div>
+                                                <p class="font-bold text-gray-900">{{ $payment->settlement->creditor->name }} dit que vous l'avez payé</p>
+                                                <p class="text-xs text-gray-500 font-medium">{{ $payment->settlement->expense->title }} • {{ number_format($payment->amount, 2) }} €</p>
+                                            </div>
+                                            <form action="{{ route('payments.confirm', $payment) }}" method="POST">
+                                                @csrf
+                                                <button type="submit" class="px-5 py-2.5 bg-brand-600 text-white font-bold rounded-xl hover:bg-brand-700 transition-all text-sm">
+                                                    Confirmer
+                                                </button>
+                                            </form>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endif
+
+                        @if($myClaims->count() > 0)
+                            <div class="bg-white rounded-[40px] border border-gray-100 shadow-sm overflow-hidden">
+                                <div class="p-8 border-b border-gray-50">
+                                    <h3 class="text-xl font-bold text-gray-900">Remboursements en attente 💰</h3>
+                                    <p class="text-sm text-gray-500 mt-1">Marquez comme reçu quand un coloc vous paie.</p>
+                                </div>
+                                <div class="divide-y divide-gray-50">
+                                    @foreach($myClaims as $settlement)
+                                        <div class="p-6 flex items-center justify-between hover:bg-gray-50/50 transition-colors">
+                                            <div class="flex items-center gap-4">
+                                                <div class="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center font-bold text-sm">
+                                                    {{ substr($settlement->debtor->name, 0, 1) }}
+                                                </div>
+                                                <div>
+                                                    <p class="font-bold text-gray-900">{{ $settlement->debtor->name }} vous doit</p>
+                                                    <p class="text-xs text-gray-500 font-medium">{{ $settlement->expense->title }}</p>
+                                                </div>
+                                            </div>
+                                            <div class="flex items-center gap-4">
+                                                <span class="font-black text-gray-900">{{ number_format($settlement->amount, 2) }} €</span>
+                                                <form action="{{ route('payments.initiate', $settlement) }}" method="POST">
+                                                    @csrf
+                                                    <button type="submit" class="p-2 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-all" title="Marquer comme reçu">
+                                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                                        </svg>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endif
+                    </section>
+
                     <section>
                         <h3 class="text-xl font-bold text-gray-900 mb-6 px-4">Actions rapides</h3>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">

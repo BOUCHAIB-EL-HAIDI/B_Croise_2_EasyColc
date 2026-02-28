@@ -36,16 +36,24 @@ class HomeController extends Controller
             ->limit(5)
             ->get();
 
-        // 2. Calculate Balance
+        // 2. Calculate Balance (Only Unpaid/Pending Settlements)
         // Amount I am owed (I am the creditor)
-        $owedToMe = Settlement::where('creditor_id', $user->id)->sum('amount');
+        $owedToMe = Settlement::where('creditor_id', $user->id)
+            ->whereDoesntHave('payments', function($q) {
+                $q->where('status', 'PAID');
+            })
+            ->sum('amount');
         
         // Amount I owe (I am the debtor)
-        $iOwe = Settlement::where('debtor_id', $user->id)->sum('amount');
+        $iOwe = Settlement::where('debtor_id', $user->id)
+            ->whereDoesntHave('payments', function($q) {
+                $q->where('status', 'PAID');
+            })
+            ->sum('amount');
 
         $netBalance = $owedToMe - $iOwe;
 
-        // 3. Breakdown of who owes whom
+        // 3. Breakdown of who owes whom (Unpaid only)
         $otherMembers = $colocation->memberships()
             ->where('is_active', true)
             ->where('user_id', '!=', $user->id)
@@ -56,10 +64,16 @@ class HomeController extends Controller
         foreach ($otherMembers as $member) {
             $owedByThem = Settlement::where('creditor_id', $user->id)
                 ->where('debtor_id', $member->user_id)
+                ->whereDoesntHave('payments', function($q) {
+                    $q->where('status', 'PAID');
+                })
                 ->sum('amount');
                 
             $owedToThem = Settlement::where('creditor_id', $member->user_id)
                 ->where('debtor_id', $user->id)
+                ->whereDoesntHave('payments', function($q) {
+                    $q->where('status', 'PAID');
+                })
                 ->sum('amount');
 
             $balance = $owedByThem - $owedToThem;
@@ -86,6 +100,29 @@ class HomeController extends Controller
             ];
         }
 
-        return view('home', compact('recentExpenses', 'netBalance', 'membership', 'colocation', 'owedToMe', 'iOwe', 'memberBalances'));
+        // 4. Detailed Debts for Dashboard actions
+        // Settlements where I am creditor (I can mark as PAID)
+        $myClaims = Settlement::where('creditor_id', $user->id)
+            ->whereDoesntHave('payments')
+            ->with(['debtor', 'expense'])
+            ->get();
+
+        // Payments I need to CONFIRM (where I am debtor)
+        $pendingConfirmations = \App\Models\Payment::where('paid_by_id', $user->id)
+            ->where('status', 'PENDING')
+            ->with(['settlement.creditor', 'settlement.expense'])
+            ->get();
+
+        return view('home', compact(
+            'recentExpenses', 
+            'netBalance', 
+            'membership', 
+            'colocation', 
+            'owedToMe', 
+            'iOwe', 
+            'memberBalances',
+            'myClaims',
+            'pendingConfirmations'
+        ));
     }
 }
