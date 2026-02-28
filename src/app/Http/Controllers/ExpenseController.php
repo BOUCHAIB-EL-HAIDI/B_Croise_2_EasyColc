@@ -21,9 +21,9 @@ class ExpenseController extends Controller
         $query = Expense::where('colocation_id', $membership->colocation_id)
             ->with(['category', 'payer']);
 
-        // Month Filter (Format: YYYY-MM)
+        // Month Filter (Format: YYYY-MM) - Using PostgreSQL TO_CHAR
         if ($request->filled('month')) {
-            $query->whereRaw("DATE_FORMAT(expense_date, '%Y-%m') = ?", [$request->month]);
+            $query->whereRaw("TO_CHAR(expense_date, 'YYYY-MM') = ?", [$request->month]);
         }
 
         $expenses = $query->orderBy('expense_date', 'desc')->get();
