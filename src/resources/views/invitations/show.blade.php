@@ -29,9 +29,12 @@
                         Accepter l'invitation
                     </button>
                 </form>
-                <a href="{{ route('home') }}" class="px-12 py-5 bg-white text-gray-500 font-bold rounded-2xl border border-gray-200 hover:bg-gray-50 transition-all text-lg">
-                    Plus tard
-                </a>
+                <form action="{{ route('invitations.refuse', $invitation->token) }}" method="POST">
+                    @csrf
+                    <button type="submit" class="px-12 py-5 bg-white text-rose-500 font-bold rounded-2xl border border-rose-100 hover:bg-rose-50 transition-all text-lg shadow-sm">
+                        Refuser l'invitation
+                    </button>
+                </form>
             </div>
             
             <p class="mt-8 text-sm text-gray-400 font-medium">

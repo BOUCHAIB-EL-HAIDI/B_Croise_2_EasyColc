@@ -26,6 +26,11 @@ class User extends Authenticatable
         'password',
     ];
 
+    protected $casts = [
+        'is_global_admin' => 'boolean',
+        'is_banned' => 'boolean',
+    ];
+
 
     public function memberships()
     {

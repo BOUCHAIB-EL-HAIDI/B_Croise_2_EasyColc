@@ -6,6 +6,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Expense;
 use App\Models\Settlement;
+use App\Models\Membership;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
@@ -29,22 +31,18 @@ class HomeController extends Controller
 
         $colocation = $membership->colocation;
 
-        // 1. Fetch 5 most recent expenses
         $recentExpenses = Expense::where('colocation_id', $colocation->id)
             ->with(['category', 'payer'])
             ->orderBy('expense_date', 'desc')
             ->limit(5)
             ->get();
 
-        // 2. Calculate Balance (Only Unpaid/Pending Settlements)
-        // Amount I am owed (I am the creditor)
         $owedToMe = Settlement::where('creditor_id', $user->id)
             ->whereDoesntHave('payments', function($q) {
                 $q->where('status', 'PAID');
             })
             ->sum('amount');
         
-        // Amount I owe (I am the debtor)
         $iOwe = Settlement::where('debtor_id', $user->id)
             ->whereDoesntHave('payments', function($q) {
                 $q->where('status', 'PAID');
@@ -53,7 +51,6 @@ class HomeController extends Controller
 
         $netBalance = $owedToMe - $iOwe;
 
-        // 3. Breakdown of who owes whom (Unpaid only)
         $otherMembers = $colocation->memberships()
             ->where('is_active', true)
             ->where('user_id', '!=', $user->id)
@@ -62,19 +59,24 @@ class HomeController extends Controller
 
         $memberBalances = [];
         foreach ($otherMembers as $member) {
-            $owedByThem = Settlement::where('creditor_id', $user->id)
+            $owedByThemSettlements = Settlement::where('creditor_id', $user->id)
                 ->where('debtor_id', $member->user_id)
                 ->whereDoesntHave('payments', function($q) {
                     $q->where('status', 'PAID');
                 })
-                ->sum('amount');
+                ->with('expense')
+                ->get();
                 
-            $owedToThem = Settlement::where('creditor_id', $member->user_id)
+            $owedToThemSettlements = Settlement::where('creditor_id', $member->user_id)
                 ->where('debtor_id', $user->id)
                 ->whereDoesntHave('payments', function($q) {
                     $q->where('status', 'PAID');
                 })
-                ->sum('amount');
+                ->with('expense')
+                ->get();
+
+            $owedByThem = $owedByThemSettlements->sum('amount');
+            $owedToThem = $owedToThemSettlements->sum('amount');
 
             $balance = $owedByThem - $owedToThem;
             $status = '';
@@ -100,14 +102,11 @@ class HomeController extends Controller
             ];
         }
 
-        // 4. Detailed Debts for Dashboard actions
-        // Settlements where I am DEBTOR and haven't sent a payment yet
         $myDebts = Settlement::where('debtor_id', $user->id)
             ->whereDoesntHave('payments')
             ->with(['creditor', 'expense'])
             ->get();
 
-        // Payments where I am CREDITOR and status is PENDING (waiting for MY confirmation)
         $pendingPaymentsToConfirm = \App\Models\Payment::whereHas('settlement', function($q) use ($user) {
                 $q->where('creditor_id', $user->id);
             })
@@ -115,16 +114,62 @@ class HomeController extends Controller
             ->with(['settlement.debtor', 'settlement.expense'])
             ->get();
 
+        // Assuming 'monthlySpending' and 'activeColocation' would be defined elsewhere
+        // or are placeholders for future implementation based on the instruction.
+        $monthlySpending = 0; // Placeholder
+        $activeColocation = $colocation; // Placeholder, using existing $colocation
+
         return view('home', compact(
             'recentExpenses', 
-            'netBalance', 
-            'membership', 
-            'colocation', 
-            'owedToMe', 
-            'iOwe', 
-            'memberBalances',
+            'memberBalances', 
+            'monthlySpending', 
+            'colocation',
             'myDebts',
-            'pendingPaymentsToConfirm'
+            'pendingPaymentsToConfirm',
+            'owedToMe',
+            'iOwe'
         ));
+    }
+
+    public function showBalance(User $user)
+    {
+        $authUser = auth()->user();
+        
+        // Safety check: users must be in the same colocation
+        $membership = $authUser->activeMembership;
+        
+        if (!$membership) {
+            abort(403, 'Vous n\'avez pas de colocation active.');
+        }
+
+        $colocationId = $membership->colocation_id;
+        
+        $isSameColoc = Membership::where('colocation_id', $colocationId)
+            ->where('user_id', $user->id)
+            ->exists();
+
+        if (!$isSameColoc) {
+            abort(403, 'Vous ne faites pas partie de la même colocation.');
+        }
+
+        $owedByThem = Settlement::where('creditor_id', $authUser->id)
+            ->where('debtor_id', $user->id)
+            ->whereDoesntHave('payments', function($q) {
+                $q->where('status', 'PAID');
+            })
+            ->with('expense')
+            ->get();
+            
+        $owedToThem = Settlement::where('creditor_id', $user->id)
+            ->where('debtor_id', $authUser->id)
+            ->whereDoesntHave('payments', function($q) {
+                $q->where('status', 'PAID');
+            })
+            ->with('expense')
+            ->get();
+
+        $netBalance = $owedByThem->sum('amount') - $owedToThem->sum('amount');
+
+        return view('balances.show', compact('user', 'owedByThem', 'owedToThem', 'netBalance'));
     }
 }

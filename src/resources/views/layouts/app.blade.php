@@ -72,6 +72,9 @@
                     @auth
                         <div class="flex items-center space-x-6 mr-6 border-r border-gray-100 pr-6">
                             <a href="{{ route('home') }}" class="text-sm font-bold text-gray-600 hover:text-brand-600 transition-colors">Colocations</a>
+                            @if(Auth::user()->activeMembership && Auth::user()->activeMembership->role === 'owner')
+                                <a href="{{ route('invitations.index') }}" class="text-sm font-bold text-gray-600 hover:text-brand-600 transition-colors">Invitations</a>
+                            @endif
                             <a href="{{ route('profile.show') }}" class="text-sm font-bold text-gray-600 hover:text-brand-600 transition-colors">Mon Profil</a>
                             @if(Auth::user()->is_global_admin)
                                 <a href="{{ route('admin.dashboard') }}" class="px-5 py-2.5 bg-brand-600 text-white font-semibold rounded-xl shadow-lg shadow-brand-500/30 hover:bg-brand-700 hover:-translate-y-0.5 transition-all text-sm">Dashboard Admin</a>
@@ -118,6 +121,9 @@
                 @auth
                     <div class="flex flex-col space-y-3 pb-4 border-b border-gray-100">
                         <a href="{{ route('home') }}" class="text-base font-bold text-gray-600 hover:text-brand-600 transition-colors">Colocations</a>
+                        @if(Auth::user()->activeMembership && Auth::user()->activeMembership->role === 'owner')
+                            <a href="{{ route('invitations.index') }}" class="text-base font-bold text-gray-600 hover:text-brand-600 transition-colors">Suivi des invitations</a>
+                        @endif
                         <a href="{{ route('profile.show') }}" class="text-base font-bold text-gray-600 hover:text-brand-600 transition-colors">Mon Profil</a>
                         @if(Auth::user()->is_global_admin)
                             <a href="{{ route('admin.dashboard') }}" class="inline-flex items-center justify-center px-4 py-2.5 bg-brand-600 text-white font-bold rounded-xl shadow-lg shadow-brand-500/30">Dashboard Admin</a>

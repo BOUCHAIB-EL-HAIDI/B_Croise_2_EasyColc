@@ -102,7 +102,6 @@
                         </div>
                     </div>
 
-                    <!-- Recent Expenses Section -->
                     <section class="bg-white rounded-[40px] border border-gray-100 shadow-sm overflow-hidden">
                         <div class="p-8 border-b border-gray-50 flex justify-between items-center">
                             <h3 class="text-xl font-bold text-gray-900">Dépenses récentes</h3>
@@ -132,9 +131,7 @@
                         </div>
                     </section>
 
-                    <!-- Payment & Debt Management -->
                     <section class="space-y-6">
-                        <!-- 1. I am Creditor: Confirm receipt of money -->
                         @if($pendingPaymentsToConfirm->count() > 0)
                             <div class="bg-amber-50 border border-amber-200 rounded-[40px] p-8 shadow-sm">
                                 <h3 class="text-xl font-bold text-amber-900 mb-6 flex items-center gap-3">
@@ -160,7 +157,6 @@
                             </div>
                         @endif
 
-                        <!-- 2. I am Debtor: Mark as paid -->
                         @if($myDebts->count() > 0)
                             <div class="bg-white rounded-[40px] border border-gray-100 shadow-sm overflow-hidden">
                                 <div class="p-8 border-b border-gray-50">
@@ -211,7 +207,6 @@
                 </div>
 
                 <aside class="space-y-8">
-                    <!-- Premium Balance Breakdown -->
                     <div class="bg-white rounded-[40px] p-8 border border-gray-100 shadow-sm transition-all hover:shadow-xl">
                         <div class="flex items-center justify-between mb-8">
                             <h3 class="text-xl font-bold text-gray-900 tracking-tight">Soldes</h3>
@@ -224,40 +219,59 @@
 
                         <div class="space-y-6">
                             @forelse($memberBalances as $item)
-                                <div class="relative p-6 rounded-[32px] overflow-hidden group transition-all @if($item['raw_balance'] > 0) bg-emerald-50/40 border border-emerald-100/50 @elseif($item['raw_balance'] < 0) bg-rose-50/40 border border-rose-100/50 @else bg-gray-50/50 border border-gray-100 @endif">
-                                    <div class="relative z-10 flex items-center justify-between">
-                                        <div class="flex items-center gap-4">
-                                            <div class="w-12 h-12 @if($item['raw_balance'] > 0) bg-emerald-100 text-emerald-700 @elseif($item['raw_balance'] < 0) bg-rose-100 text-rose-700 @else bg-gray-100 text-gray-700 @endif rounded-2xl flex items-center justify-center font-bold text-lg shadow-sm border @if($item['raw_balance'] > 0) border-emerald-200 @elseif($item['raw_balance'] < 0) border-rose-200 @else border-gray-200 @endif">
+                                @if($item['raw_balance'] != 0)
+                                <a href="{{ route('balances.show', $item['user']) }}" class="block relative p-6 rounded-[32px] overflow-hidden group transition-all hover:shadow-xl hover:-translate-y-1 @if($item['raw_balance'] > 0) bg-emerald-50/40 border border-emerald-100/50 @else bg-rose-50/40 border border-rose-100/50 @endif">
+                                @else
+                                <div class="relative p-6 rounded-[32px] overflow-hidden bg-gray-50/50 border border-gray-100">
+                                @endif
+                                    <div class="relative z-10 flex items-center justify-between gap-4">
+                                        <!-- Left Side: User Icon & Info -->
+                                        <div class="flex items-center gap-4 flex-1">
+                                            <div class="w-14 h-14 flex-shrink-0 @if($item['raw_balance'] > 0) bg-emerald-100 text-emerald-700 border-emerald-200 @elseif($item['raw_balance'] < 0) bg-rose-100 text-rose-700 border-rose-200 @else bg-gray-100 text-gray-700 border-gray-200 @endif rounded-2xl flex items-center justify-center font-black text-xl shadow-sm border">
                                                 {{ substr($item['user']->name, 0, 1) }}
                                             </div>
                                             <div>
                                                 @if($item['raw_balance'] > 0)
-                                                    <p class="text-sm font-bold text-emerald-800 mb-0.5">{{ $item['user']->name }}</p>
-                                                    <p class="text-xs font-bold text-emerald-600 uppercase tracking-widest">{{ $item['status'] }}</p>
+                                                    <p class="text-base font-black text-emerald-900 mb-0.5">{{ $item['user']->name }}</p>
+                                                    <p class="text-[10px] font-black text-emerald-600 uppercase tracking-widest leading-none">{{ $item['status'] }}</p>
                                                 @elseif($item['raw_balance'] < 0)
-                                                    <p class="text-sm font-bold text-rose-800 mb-0.5">{{ $item['status'] }}</p>
-                                                    <p class="text-xs font-bold text-rose-600 uppercase tracking-widest">{{ $item['user']->name }}</p>
+                                                    <p class="text-[10px] font-black text-rose-600 uppercase tracking-widest mb-1 leading-none">{{ $item['status'] }}</p>
+                                                    <p class="text-base font-black text-rose-900">{{ $item['user']->name }}</p>
                                                 @else
-                                                    <p class="text-sm font-bold text-gray-800 mb-0.5">{{ $item['user']->name }}</p>
-                                                    <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">{{ $item['status'] }}</p>
+                                                    <p class="text-base font-black text-gray-800 mb-0.5">{{ $item['user']->name }}</p>
+                                                    <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">{{ $item['status'] }}</p>
                                                 @endif
                                             </div>
                                         </div>
                                         
-                                        <div class="text-right">
+                                        <!-- Right Side: Amount & Icon -->
+                                        <div class="flex items-center gap-4 flex-shrink-0">
+                                            <div class="text-right">
+                                                @if($item['raw_balance'] != 0)
+                                                    <p class="text-2xl font-black @if($item['raw_balance'] > 0) text-emerald-600 @else text-rose-600 @endif tabular-nums">
+                                                        {{ number_format($item['balance'], 2) }} €
+                                                    </p>
+                                                @else
+                                                    <p class="text-sm font-bold text-gray-400">0.00 €</p>
+                                                @endif
+                                            </div>
+                                            
                                             @if($item['raw_balance'] != 0)
-                                                <span class="text-xl font-black @if($item['raw_balance'] > 0) text-emerald-600 @else text-rose-600 @endif">
-                                                    {{ number_format($item['balance'], 2) }} €
-                                                </span>
-                                            @else
-                                                <span class="text-sm font-bold text-gray-400">0.00 €</span>
+                                                <div class="w-10 h-10 rounded-full bg-white border border-gray-50 flex items-center justify-center text-gray-300 group-hover:text-gray-900 group-hover:scale-110 transition-all shadow-sm">
+                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                                    </svg>
+                                                </div>
                                             @endif
                                         </div>
                                     </div>
                                     
-                                    <!-- Decorative gradient background on hover -->
                                     <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity bg-gradient-to-br @if($item['raw_balance'] > 0) from-emerald-100/20 to-transparent @elseif($item['raw_balance'] < 0) from-rose-100/20 to-transparent @else from-gray-100/20 to-transparent @endif"></div>
+                                @if($item['raw_balance'] != 0)
+                                </a>
+                                @else
                                 </div>
+                                @endif
                             @empty
                                 <div class="text-center py-10 bg-gray-50 rounded-[32px] border border-dashed border-gray-200">
                                     <span class="text-4xl mb-3 block">🤝</span>
@@ -266,12 +280,6 @@
                             @endforelse
                         </div>
 
-                        <a href="{{ route('expenses.index') }}" class="mt-10 flex items-center justify-center gap-3 w-full py-5 bg-gray-900 text-white font-bold rounded-2xl shadow-xl shadow-gray-900/10 hover:bg-gray-800 hover:-translate-y-1 transition-all">
-                            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5S19.832 5.477 21 6.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-                            </svg>
-                            Journal complet
-                        </a>
                     </div>
 
                     <div class="bg-gray-900 rounded-[40px] p-8 text-white shadow-2xl overflow-hidden relative">

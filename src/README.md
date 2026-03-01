@@ -1,59 +1,57 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🏠 EasyColoc
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+**EasyColoc** est une plateforme web moderne conçue pour simplifier la gestion financière et administrative des colocations. Fine les calculs complexes sur papier, EasyColoc automatise la répartition des dépenses et le suivi des remboursements.
 
-## About Laravel
+## 🚀 Fonctionnalités Clés
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### 📊 Gestion des Dépenses & Analytics
+- **Ajout de dépenses** : Répartition automatique entre tous les membres actifs.
+- **Filtres avancés** : Visualisez vos dépenses mois par mois.
+- **Statistiques détaillées** : Tableaux de bord par catégorie et évolution mensuelle.
+- **Suppression définitive** : Nettoyage complet des données liées à une dépense.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### 💳 Système de Paiement en Deux Étapes
+- **Sécurité & Transparence** : 
+    1. Le débiteur marque "J'ai payé" après son transfert (Statut PENDING).
+    2. Le créancier confirme la réception pour valider officiellement le remboursement (Statut PAID).
+- **Justification des Soldes** : Détail complet des dépenses (Dettes vs Créances) au sein des cartes de balance pour expliquer le calcul du montant net.
+- **Calcul automatique des soldes** : Visualisez instantanément la balance nette par membre.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 👥 Gestion de la Colocation
+- **Suivi des Invitations** : Page dédiée pour les propriétaires permettant de suivre en temps réel si une invitation a été **acceptée**, **refusée** ou est toujours **en attente**.
+- **Logique de Refus** : Possibilité pour les invités de décliner une invitation s'ils ne souhaitent pas rejoindre la colocation.
+- **Rôles & Hiérarchie** : Distinction entre Propriétaire (gestion) et Membres.
+- **Invitations par Email** : Rejoignez une coloc en un clic via Mailtrap.
+- **Système de Réputation** : Visualisez le sérieux de vos colocataires via des points ⭐.
+- **Modération** : Possibilité pour le propriétaire de retirer des membres (si soldes nuls) ou de quitter la coloc.
 
-## Learning Laravel
+### 🛡️ Administration Globale (Admin)
+- **Dashboard Global** : Statistiques sur le nombre total d'utilisateurs et de colocations.
+- **Modération des Utilisateurs** : Bannissement et débannissement instantané avec déconnexion forcée.
+- **Statistiques de Dépenses Globales** : Vue d'ensemble des flux financiers sur la plateforme.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+## 🛠️ Installation & Configuration
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+1. **Clonez le projet** :
+   ```bash
+   git clone [url-du-repo]
+   ```
 
-## Laravel Sponsors
+2. **Configuration `.env`** :
+   Configurez votre base de données et vos accès **Mailtrap** pour les invitations.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+3. **Migrations & Seeders** :
+   ```bash
+   php artisan migrate --seed
+   ```
 
-### Premium Partners
+4. **Lancement** :
+   ```bash
+   php artisan serve
+   ```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+## 🎥 Démonstration
+Consultez le fichier `walkthrough.md` dans les artifacts pour voir les captures d'écran et les flux vidéo des dernières fonctionnalités.
 
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+---
+© 2026 EasyColoc. Conçu avec ♥ pour les colocataires.

@@ -14,11 +14,11 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ExpenseController;
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\PaymentController;
 
 Route::get('/' , [HomeController::class , 'welcome'])->name('welcome');
 
 Route::middleware(['auth'])->group(function () {
-    // Admin Routes
     Route::middleware(['admin'])->prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
         Route::post('/users/{user}/ban', [AdminController::class, 'banUser'])->name('users.ban');
@@ -29,6 +29,7 @@ Route::middleware(['auth'])->group(function () {
     
     Route::post('/invitations', [InvitationController::class, 'store'])->name('invitations.store');
     Route::post('/invitations/{token}/accept', [InvitationController::class, 'accept'])->name('invitations.accept');
+    Route::post('/invitations/{token}/refuse', [InvitationController::class, 'refuse'])->name('invitations.refuse');
 
     Route::get('/colocations/create', [ColocationController::class, 'create'])->name('colocations.create');
     Route::post('/colocations', [ColocationController::class, 'store'])->name('colocations.store');
@@ -36,15 +37,22 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/colocations/leave', [ColocationController::class, 'leave'])->name('colocations.leave');
     Route::post('/colocations/members/{membership}/remove', [ColocationController::class, 'removeMember'])->name('colocations.members.remove');
 
-    // Category Management - Owner only
+    Route::post('/settlements/{settlement}/pay', [PaymentController::class, 'initiate'])->name('payments.initiate');
+    Route::post('/payments/pay-all/{creditor}', [PaymentController::class, 'payAll'])->name('payments.pay_all');
+    Route::post('/payments/{payment}/confirm', [PaymentController::class, 'confirm'])->name('payments.confirm');
+    Route::post('/payments/confirm-all/{debtor}', [PaymentController::class, 'confirmAll'])->name('payments.confirm_all');
+
+    // Balance Details
+    Route::get('/balances/{user}', [HomeController::class, 'showBalance'])->name('balances.show');
+
     Route::middleware(['role:owner'])->group(function () {
+        Route::get('/invitations', [InvitationController::class, 'index'])->name('invitations.index');
         Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
         Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
         Route::patch('/categories/{category}', [CategoryController::class, 'update'])->name('categories.update');
         Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
     });
 
-    // Expense Management
     Route::get('/expenses', [ExpenseController::class, 'index'])->name('expenses.index');
     Route::get('/expenses/create', [ExpenseController::class, 'create'])->name('expenses.create');
     Route::post('/expenses', [ExpenseController::class, 'store'])->name('expenses.store');

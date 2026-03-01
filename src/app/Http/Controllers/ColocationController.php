@@ -65,7 +65,6 @@ class ColocationController extends Controller
 
         $colocation->update(['status' => 'cancelled']);
 
-        // Process all active members to handle debts and reputations
         $activeMemberships = $colocation->memberships()->where('is_active', true)->get();
         foreach ($activeMemberships as $m) {
             $this->handleMemberDeparture($m);
@@ -119,17 +118,13 @@ class ColocationController extends Controller
         $user = $membership->user;
         $colocation = $membership->colocation;
         $ownerMembership = $colocation->memberships()->where('role', 'owner')->first();
-        // If the owner themselves is being processed (during cancel)
         $owner = $ownerMembership ? $ownerMembership->user : null;
 
-        // Check for debts
         $debts = \App\Models\Settlement::where('debtor_id', $user->id)->get();
 
         if ($debts->count() > 0) {
-            // Apply reputation penalty (Section 5.5)
-            $user->decrement('reputation'); // -1 Reputation
+            $user->decrement('reputation');
 
-            // Transfer debts to owner (if owner exists and is not the member itself)
             if ($owner && $owner->id !== $user->id) {
                 foreach ($debts as $debt) {
                     if ($debt->creditor_id === $owner->id) {
@@ -140,8 +135,7 @@ class ColocationController extends Controller
                 }
             }
         } else {
-            // Gain reputation for leaving without debt (Section 5.5)
-            $user->increment('reputation'); // +1 Reputation
+            $user->increment('reputation');
         }
 
         $membership->update([

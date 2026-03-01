@@ -21,14 +21,13 @@ class ExpenseController extends Controller
         $query = Expense::where('colocation_id', $membership->colocation_id)
             ->with(['category', 'payer']);
 
-        // Month Filter (Format: YYYY-MM) - Using PostgreSQL TO_CHAR
+        
         if ($request->filled('month')) {
             $query->whereRaw("TO_CHAR(expense_date, 'YYYY-MM') = ?", [$request->month]);
         }
 
         $expenses = $query->orderBy('expense_date', 'desc')->get();
 
-        // Statistics
         $totalAmount = $expenses->sum('amount');
         $statsByCategory = $expenses->groupBy('category_id')->map(function ($group) {
             return [
@@ -50,7 +49,7 @@ class ExpenseController extends Controller
             return redirect('/home')->with('error', 'Action non autorisée.');
         }
 
-        // Get categories for the selection dropdown
+        
         $categories = Category::where('colocation_id', $membership->colocation_id)->get();
 
         return view('expenses.create', compact('categories'));
@@ -61,7 +60,7 @@ class ExpenseController extends Controller
         $user = Auth::user();
         $membership = $user->activeMembership;
 
-        // Basic validation
+        
         $request->validate([
             'title' => 'required|string|max:255',
             'amount' => 'required|numeric|min:0.01',
@@ -69,7 +68,6 @@ class ExpenseController extends Controller
             'expense_date' => 'required|date',
         ]);
 
-        // 1. Create the expense
         $expense = Expense::create([
             'colocation_id' => $membership->colocation_id,
             'category_id' => $request->category_id,
@@ -79,7 +77,6 @@ class ExpenseController extends Controller
             'expense_date' => $request->expense_date,
         ]);
 
-        // 2. Simple logic: Split with other members
         $members = $membership->colocation->memberships()->where('is_active', true)->get();
         $memberCount = $members->count();
         
@@ -87,7 +84,6 @@ class ExpenseController extends Controller
             $splitAmount = $request->amount / $memberCount;
             
             foreach ($members as $member) {
-                // We create a settlement for everyone EXCEPT the payer
                 if ($member->user_id !== $user->id) {
                     \App\Models\Settlement::create([
                         'expense_id' => $expense->id,
@@ -104,12 +100,12 @@ class ExpenseController extends Controller
 
     public function destroy(Expense $expense)
     {
-        // Simple security check: same colocation
+        
         if ($expense->colocation_id !== Auth::user()->activeMembership->colocation_id) {
             return back()->with('error', 'Action non autorisée.');
         }
 
-        $expense->delete(); // Database Cascade deletes settlements
+        $expense->delete(); 
 
         return redirect()->route('expenses.index')->with('success', 'Dépense supprimée définitivement.');
     }

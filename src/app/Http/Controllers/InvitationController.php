@@ -13,6 +13,22 @@ use Illuminate\Support\Str;
 
 class InvitationController extends Controller
 {
+    public function index()
+    {
+        $user = Auth::user();
+        $membership = $user->activeMembership;
+
+        if (!$membership || $membership->role !== 'owner') {
+            abort(403);
+        }
+
+        $sentInvitations = Invitation::where('colocation_id', $membership->colocation_id)
+                                    ->orderBy('created_at', 'desc')
+                                    ->get();
+
+        return view('invitations.index', compact('sentInvitations'));
+    }
+
     public function store(Request $request)
     {
         $user = Auth::user();
@@ -35,7 +51,6 @@ class InvitationController extends Controller
             'status' => 'pending'
         ]);
 
-        // Send the invitation email
         Mail::to($request->email)->send(new InvitationMail($invitation));
 
         return back()->with('success', 'Invitation envoyée par email à ' . $request->email . ' !');
@@ -95,5 +110,19 @@ class InvitationController extends Controller
         $invitation->update(['status' => 'accepted']);
 
         return redirect('/home')->with('success', 'Bienvenue dans votre nouvelle colocation !');
+    }
+
+    public function refuse($token)
+    {
+        $invitation = Invitation::where('token', $token)->where('status', 'pending')->firstOrFail();
+        $user = Auth::user();
+
+        if (!$user || $user->email !== $invitation->email) {
+            return redirect('/home')->with('error', 'Action non autorisée.');
+        }
+
+        $invitation->update(['status' => 'declined']);
+
+        return redirect('/home')->with('info', 'Vous avez refusé l\'invitation.');
     }
 }
