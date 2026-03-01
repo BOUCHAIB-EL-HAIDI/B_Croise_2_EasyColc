@@ -1,0 +1,110 @@
+@startuml EasyColoc Class Diagram
+
+' Config pour un meilleur rendu
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+
+class User {
+    +id: BigInt
+    +name: String
+    +email: String
+    +password: String
+    +reputation: Integer
+    +is_global_admin: Boolean
+    +is_banned: Boolean
+    +created_at: DateTime
+    +updated_at: DateTime
+}
+
+class Colocation {
+    +id: BigInt
+    +name: String
+    +description: Text
+    +status: String
+    +created_at: DateTime
+    +updated_at: DateTime
+}
+
+class Membership {
+    +id: BigInt
+    +user_id: BigInt
+    +colocation_id: BigInt
+    +role: Enum(owner, member)
+    +is_active: Boolean
+    +joined_at: DateTime
+    +left_at: DateTime
+    +created_at: DateTime
+    +updated_at: DateTime
+}
+
+class Invitation {
+    +id: BigInt
+    +colocation_id: BigInt
+    +token: String
+    +email: String
+    +status: Enum(pending, accepted, declined)
+    +created_at: DateTime
+    +updated_at: DateTime
+}
+
+class Category {
+    +id: BigInt
+    +colocation_id: BigInt
+    +name: String
+    +created_at: DateTime
+    +updated_at: DateTime
+}
+
+class Expense {
+    +id: BigInt
+    +colocation_id: BigInt
+    +category_id: BigInt
+    +payer_id: BigInt
+    +title: String
+    +amount: Decimal
+    +expense_date: Date
+    +created_at: DateTime
+    +updated_at: DateTime
+}
+
+class Settlement {
+    +id: BigInt
+    +expense_id: BigInt
+    +debtor_id: BigInt
+    +creditor_id: BigInt
+    +amount: Decimal
+    +created_at: DateTime
+    +updated_at: DateTime
+}
+
+class Payment {
+    +id: BigInt
+    +settlement_id: BigInt
+    +paid_by_id: BigInt
+    +amount: Decimal
+    +status: Enum(PENDING, PAID)
+    +payment_date: DateTime
+    +confirmed_at: DateTime
+    +created_at: DateTime
+    +updated_at: DateTime
+}
+
+' Relations
+User "1" -- "0..*" Membership : a
+Colocation "1" -- "0..*" Membership : contient
+
+Colocation "1" -- "0..*" Invitation : envoie
+Colocation "1" -- "0..*" Category : possède
+Colocation "1" -- "0..*" Expense : enregistre
+
+Category "1" -- "0..*" Expense : catégorise
+User "1" -- "0..*" Expense : paye (payer_id)
+
+Expense "1" -- "0..*" Settlement : génère
+User "1" -- "0..*" Settlement : doit (debtor_id)
+User "1" -- "0..*" Settlement : reçoit (creditor_id)
+
+Settlement "1" -- "0..1" Payment : règle
+User "1" -- "0..*" Payment : effectue (paid_by_id)
+
+@enduml
