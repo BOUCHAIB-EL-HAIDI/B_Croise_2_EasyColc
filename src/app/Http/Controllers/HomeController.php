@@ -42,7 +42,7 @@ class HomeController extends Controller
                 $q->where('status', 'PAID');
             })
             ->sum('amount');
-        
+
         $iOwe = Settlement::where('debtor_id', $user->id)
             ->whereDoesntHave('payments', function($q) {
                 $q->where('status', 'PAID');
@@ -66,7 +66,7 @@ class HomeController extends Controller
                 })
                 ->with('expense')
                 ->get();
-                
+
             $owedToThemSettlements = Settlement::where('creditor_id', $member->user_id)
                 ->where('debtor_id', $user->id)
                 ->whereDoesntHave('payments', function($q) {
@@ -114,15 +114,14 @@ class HomeController extends Controller
             ->with(['settlement.debtor', 'settlement.expense'])
             ->get();
 
-        // Assuming 'monthlySpending' and 'activeColocation' would be defined elsewhere
-        // or are placeholders for future implementation based on the instruction.
-        $monthlySpending = 0; // Placeholder
-        $activeColocation = $colocation; // Placeholder, using existing $colocation
+
+        $monthlySpending = 0;
+        $activeColocation = $colocation;
 
         return view('home', compact(
-            'recentExpenses', 
-            'memberBalances', 
-            'monthlySpending', 
+            'recentExpenses',
+            'memberBalances',
+            'monthlySpending',
             'colocation',
             'myDebts',
             'pendingPaymentsToConfirm',
@@ -134,16 +133,16 @@ class HomeController extends Controller
     public function showBalance(User $user)
     {
         $authUser = auth()->user();
+
         
-        // Safety check: users must be in the same colocation
         $membership = $authUser->activeMembership;
-        
+
         if (!$membership) {
             abort(403, 'Vous n\'avez pas de colocation active.');
         }
 
         $colocationId = $membership->colocation_id;
-        
+
         $isSameColoc = Membership::where('colocation_id', $colocationId)
             ->where('user_id', $user->id)
             ->exists();
@@ -159,7 +158,7 @@ class HomeController extends Controller
             })
             ->with('expense')
             ->get();
-            
+
         $owedToThem = Settlement::where('creditor_id', $user->id)
             ->where('debtor_id', $authUser->id)
             ->whereDoesntHave('payments', function($q) {

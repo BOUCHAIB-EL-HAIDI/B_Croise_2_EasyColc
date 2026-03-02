@@ -42,7 +42,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/payments/{payment}/confirm', [PaymentController::class, 'confirm'])->name('payments.confirm');
     Route::post('/payments/confirm-all/{debtor}', [PaymentController::class, 'confirmAll'])->name('payments.confirm_all');
 
-    // Balance Details
+   
     Route::get('/balances/{user}', [HomeController::class, 'showBalance'])->name('balances.show');
 
     Route::middleware(['role:owner'])->group(function () {

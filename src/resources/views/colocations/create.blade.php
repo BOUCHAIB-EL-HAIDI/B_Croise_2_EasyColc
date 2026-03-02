@@ -16,10 +16,10 @@
     <div class="bg-white rounded-[40px] p-8 md:p-12 border border-gray-100 shadow-xl">
         <form action="{{ route('colocations.store') }}" method="POST" class="space-y-8">
             @csrf
-            
+
             <div>
                 <label for="name" class="block text-sm font-bold text-gray-700 uppercase tracking-widest mb-3">Nom de la colocation</label>
-                <input type="text" name="name" id="name" required 
+                <input type="text" name="name" id="name" required
                     class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 transition-all outline-none text-lg font-medium"
                     placeholder="Ex: Les Amis de Rivoli">
                 @error('name')
@@ -39,7 +39,7 @@
 
             <div class="pt-4 flex flex-col sm:flex-row gap-4">
                 <button type="submit" class="flex-1 px-8 py-5 bg-brand-600 text-white font-black rounded-2xl shadow-lg shadow-brand-500/30 hover:bg-brand-700 hover:-translate-y-1 active:translate-y-0 transition-all text-xl uppercase tracking-widest">
-                    Lancer la Coloc'
+                    Lancer la Coloc
                 </button>
                 <a href="{{ route('home') }}" class="px-8 py-5 bg-gray-100 text-gray-600 font-bold rounded-2xl hover:bg-gray-200 transition-all text-center">
                     Annuler
